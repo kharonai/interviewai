@@ -9,6 +9,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { InterviewSetupComponent } from './pages/interview-setup/interview-setup.component';
 import { InterviewComponent } from './pages/interview/interview.component';
 import { InterviewFeedbackComponent } from './pages/interview-feedback/interview-feedback.component';
+import { ProfileSettingsComponent } from './pages/profile-settings/profile-settings.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent }, // Home page
@@ -17,7 +18,8 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent }, // Dashboard,
   { path: 'start-interview', component: InterviewSetupComponent }, // New Interview
   { path: 'interview', component: InterviewComponent }, // Interview
-  { path: 'interview-feedback', component: InterviewFeedbackComponent } // Interview
+  { path: 'interview-feedback', component: InterviewFeedbackComponent }, // Interview
+  { path: 'settings', component: ProfileSettingsComponent },
 ];
 
 @NgModule({

@@ -24,8 +24,4 @@ export class SignupComponent {
       // TODO: Send user data to backend API
     }
   }
-
-  handleResumeUpload(event: any) {
-    this.resumeFile = event.target.files[0];
-  }
 }
