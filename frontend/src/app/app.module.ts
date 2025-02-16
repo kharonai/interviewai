@@ -12,6 +12,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { InterviewSetupComponent } from './pages/interview-setup/interview-setup.component';
 import { InterviewComponent } from './pages/interview/interview.component';
+import { InterviewFeedbackComponent } from './pages/interview-feedback/interview-feedback.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { InterviewComponent } from './pages/interview/interview.component';
     HeaderComponent,
     DashboardComponent,
     InterviewSetupComponent,
-    InterviewComponent
+    InterviewComponent,
+    InterviewFeedbackComponent
   ],
   imports: [
     BrowserModule,

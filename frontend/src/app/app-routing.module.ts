@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { InterviewSetupComponent } from './pages/interview-setup/interview-setup.component';
 import { InterviewComponent } from './pages/interview/interview.component';
+import { InterviewFeedbackComponent } from './pages/interview-feedback/interview-feedback.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent }, // Home page
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Login
   { path: 'dashboard', component: DashboardComponent }, // Dashboard,
   { path: 'start-interview', component: InterviewSetupComponent }, // New Interview
-  { path: 'interview', component: InterviewComponent } // Interview
+  { path: 'interview', component: InterviewComponent }, // Interview
+  { path: 'interview-feedback', component: InterviewFeedbackComponent } // Interview
 ];
 
 @NgModule({
