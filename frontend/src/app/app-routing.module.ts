@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent }, // Dashboard,
   { path: 'start-interview', component: InterviewSetupComponent }, // New Interview
   { path: 'interview', component: InterviewComponent }, // Interview
+  { path: 'interview-setup', component: InterviewSetupComponent }, // Interview
   { path: 'interview-feedback', component: InterviewFeedbackComponent }, // Interview
   { path: 'settings', component: ProfileSettingsComponent },
 ];
