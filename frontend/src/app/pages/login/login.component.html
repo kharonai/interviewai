@@ -1,0 +1,40 @@
+<div class="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+      <h2 class="text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Don't have an account?
+        <a routerLink="/signup" class="font-medium text-indigo-600 hover:text-indigo-500">Sign up here</a>
+      </p>
+    </div>
+  
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+            <input formControlName="email" type="email" id="email" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+          </div>
+  
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input formControlName="password" type="password" id="password" required
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+          </div>
+  
+          <div class="text-sm text-right">
+            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+          </div>
+  
+          <div>
+            <button type="submit"
+              class="w-full flex justify-center rounded-md bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              [disabled]="loginForm.invalid">
+              Sign In
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

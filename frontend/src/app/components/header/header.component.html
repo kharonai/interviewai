@@ -1,0 +1,34 @@
+<header class="absolute inset-x-0 top-0 z-50 bg-white shadow-md">
+    <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <!-- Logo -->
+      <div class="flex lg:flex-1">
+        <a routerLink="/" class="-m-1.5 p-1.5 flex items-center">
+          <lucide-icon name="brain-circuit" class="h-8 w-8 text-indigo-600"></lucide-icon>
+          <span class="ml-2 text-lg font-semibold text-gray-900">Mock Interview AI</span>
+        </a>
+      </div>
+  
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex lg:gap-x-12">
+        <a routerLink="/" class="text-sm font-semibold text-gray-900 hover:text-indigo-600">Home</a>
+        <a routerLink="/dashboard" class="text-sm font-semibold text-gray-900 hover:text-indigo-600">Dashboard</a>
+        <a routerLink="/interviews" class="text-sm font-semibold text-gray-900 hover:text-indigo-600">Mock Interviews</a>
+        <a routerLink="/history" class="text-sm font-semibold text-gray-900 hover:text-indigo-600">Past Interviews</a>
+        <a routerLink="/profile" class="text-sm font-semibold text-gray-900 hover:text-indigo-600">Profile</a>
+      </div>
+  
+      <!-- Sign In / Sign Up -->
+      <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+        <a routerLink="/login" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">Sign In</a>
+      </div>
+  
+      <!-- Mobile Menu Button -->
+      <div class="lg:hidden">
+        <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
+          <span class="sr-only">Open main menu</span>
+          <lucide-icon name="menu" class="h-6 w-6"></lucide-icon>
+        </button>
+      </div>
+    </nav>
+  </header>
+  
