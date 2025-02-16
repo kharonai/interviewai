@@ -1,0 +1,118 @@
+<div class="min-h-screen bg-gray-100 pt-20">
+    <!-- Page Header -->
+    <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900">Start a New Interview</h1>
+      </div>
+    </header>
+
+<!-- Step Progress Indicator (With Proper Spacing) -->
+<div class="mx-auto max-w-2xl px-6 pt-10 pb-6">
+    <div class="flex justify-between items-center">
+      <div *ngFor="let s of steps; let i = index" class="flex items-center">
+        <!-- Step Circle -->
+        <div class="w-10 h-10 flex items-center justify-center rounded-full text-sm font-semibold"
+          [ngClass]="{
+            'bg-indigo-600 text-white': step > i + 1,
+            'bg-indigo-300 text-white': step === i + 1,
+            'bg-gray-300 text-gray-700': step < i + 1
+          }">
+          {{ i + 1 }}
+        </div>
+  
+        <!-- Step Label -->
+        <div class="ml-2 text-sm font-semibold"
+          [ngClass]="{ 'text-indigo-600': step >= i + 1, 'text-gray-500': step < i + 1 }">
+          {{ s }}
+        </div>
+  
+        <!-- Progress Line -->
+        <div *ngIf="i < steps.length - 1" class="w-12 h-1 bg-gray-300"
+          [ngClass]="{ 'bg-indigo-600': step > i + 1 }"></div>
+      </div>
+    </div>
+  </div>
+  
+    <main class="mx-auto max-w-2xl px-6 py-10 sm:px-6 lg:px-8 bg-white shadow-lg rounded-2xl transition-all duration-500 ease-in-out">
+      <form [formGroup]="interviewForm" (ngSubmit)="onSubmit()">
+        <!-- Animated Form Steps -->
+        <div [@fadeIn] *ngIf="step === 1">
+          <h2 class="text-xl font-semibold text-gray-900">Step 1: Choose Role & Company</h2>
+          <label for="role" class="block mt-4 text-sm font-medium text-gray-700">Role</label>
+          <input formControlName="role" type="text" id="role" required
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+  
+          <label for="company" class="block mt-4 text-sm font-medium text-gray-700">Company</label>
+          <input formControlName="company" type="text" id="company" required
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+        </div>
+  
+        <div [@fadeIn] *ngIf="step === 2">
+          <h2 class="text-xl font-semibold text-gray-900">Step 2: Select Interview Mode</h2>
+          <div class="mt-4 flex space-x-4">
+            <button type="button" (click)="setInterviewMode('Text')"
+              [class.bg-indigo-600]="interviewForm.value.mode === 'Text'"
+              class="w-1/2 p-3 border rounded-lg text-gray-900 hover:bg-indigo-500 hover:text-white transition-all duration-200">
+              Text-Based
+            </button>
+            <button type="button" (click)="setInterviewMode('Voice')"
+              [class.bg-indigo-600]="interviewForm.value.mode === 'Voice'"
+              class="w-1/2 p-3 border rounded-lg text-gray-900 hover:bg-indigo-500 hover:text-white transition-all duration-200">
+              Voice-Based
+            </button>
+          </div>
+        </div>
+  
+        <div [@fadeIn] *ngIf="step === 3">
+            <h2 class="text-xl font-semibold text-gray-900">Step 3: Choose Difficulty Level</h2>
+            <div class="mt-4 space-y-2">
+              <button type="button" (click)="setDifficulty('Easy')"
+                [class.bg-green-600]="interviewForm.value.difficulty === 'Easy'"
+                [class.text-white]="interviewForm.value.difficulty === 'Easy'"
+                class="block w-full p-3 border rounded-lg text-gray-900 hover:bg-green-100 transition-all duration-200">
+                Easy (Entry-Level)
+              </button>
+          
+              <button type="button" (click)="setDifficulty('Medium')"
+                [class.bg-yellow-600]="interviewForm.value.difficulty === 'Medium'"
+                [class.text-white]="interviewForm.value.difficulty === 'Medium'"
+                class="block w-full p-3 border rounded-lg text-gray-900 hover:bg-yellow-100 transition-all duration-200">
+                Medium (Mid-Level)
+              </button>
+          
+              <button type="button" (click)="setDifficulty('Hard')"
+                [class.bg-red-600]="interviewForm.value.difficulty === 'Hard'"
+                [class.text-white]="interviewForm.value.difficulty === 'Hard'"
+                class="block w-full p-3 border rounded-lg text-gray-900 hover:bg-red-100 transition-all duration-200">
+                Hard (Senior-Level)
+              </button>
+            </div>
+          </div>
+          
+  
+          <div [@fadeIn] *ngIf="step === 4">
+            <h2 class="text-xl font-semibold text-gray-900">Step 4: Review & Start Interview</h2>
+            <div class="mt-4 p-4 border rounded-lg bg-gray-100 shadow-sm">
+              <p class="text-lg"><strong>Role:</strong> {{ selectedRole }}</p>
+              <p class="text-lg"><strong>Company:</strong> {{ selectedCompany }}</p>
+              <p class="text-lg"><strong>Mode:</strong> {{ selectedMode }}</p>
+              <p class="text-lg"><strong>Difficulty:</strong> {{ selectedDifficulty }}</p>
+            </div>
+          </div>
+          
+          
+          
+  
+        <!-- Navigation Buttons -->
+        <div class="mt-6 flex justify-between">
+          <button type="button" (click)="prevStep()" *ngIf="step > 1"
+            class="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-all duration-200">Back</button>
+          <button type="button" (click)="nextStep()" *ngIf="step < 4"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-500 transition-all duration-200">Next</button>
+          <button type="submit" *ngIf="step === 4"
+            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-500 transition-all duration-200">Start Interview</button>
+        </div>
+      </form>
+    </main>
+  </div>
+  
