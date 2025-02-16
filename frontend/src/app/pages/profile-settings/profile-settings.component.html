@@ -1,0 +1,38 @@
+<div class="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Settings</h2>
+    <p class="text-gray-600 mb-6">Update your job preferences and upload your resume.</p>
+
+    <!-- Job Title -->
+    <div class="mb-6">
+      <label for="jobTitle" class="block text-sm font-medium text-gray-900">Job Title</label>
+      <input id="jobTitle" formControlName="jobTitle" type="text" aria-label="Job Title"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+    </div>
+
+    <!-- Interested Roles -->
+    <div class="mb-6">
+      <label for="interestedRoles" class="block text-sm font-medium text-gray-900">Interested Roles</label>
+      <input id="interestedRoles" formControlName="interestedRoles" type="text" aria-label="Interested Roles"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+    </div>
+
+    <!-- Resume Upload -->
+    <div class="mb-6">
+      <label for="resumeUpload" class="block text-sm font-medium text-gray-900">Resume</label>
+      <div class="mt-2 flex items-center">
+        <input type="file" (change)="onResumeUpload($event)" class="hidden" id="resumeUpload" aria-label="Upload Resume">
+        <label for="resumeUpload" class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-500 cursor-pointer">
+          Upload Resume
+        </label>
+        <span class="ml-4 text-gray-700">{{ resumeFileName || 'No file uploaded' }}</span>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <div class="flex justify-end">
+      <button (click)="saveSettings()" aria-label="Save Changes"
+        class="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-500">
+        Save Changes
+      </button>
+    </div>
+</div>

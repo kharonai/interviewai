@@ -1,0 +1,36 @@
+/* Ensure smooth scrolling for chat */
+.flex-col {
+    scroll-behavior: smooth;
+  }
+  
+  /* AI Messages */
+  .self-start {
+    align-self: flex-start;
+    max-width: 80%;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+  
+  /* User Messages */
+  .self-end {
+    align-self: flex-end;
+    max-width: 80%;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+  
+
+  /* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  /* Ensures consistent spacing for last message */
+  .mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
