@@ -13,9 +13,11 @@ import { ProfileSettingsComponent } from './pages/profile-settings/profile-setti
 import { HomeComponent } from './pages/home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { animation } from '@angular/animations';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   { path: '', component: LandingComponent}, // Home page
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'signup', component: SignupComponent}, // Sign-Up
   { path: 'login', component: LoginComponent}, // Login
   { path: 'dashboard', component: DashboardComponent}, // Dashboard,
@@ -24,7 +26,8 @@ const routes: Routes = [
   { path: 'interview-feedback', component: InterviewFeedbackComponent}, // Interview
   { path: 'interview-setup', component: InterviewSetupComponent}, // Interview
   { path: 'settings', component: ProfileSettingsComponent},
-  { path: 'home', component: HomeComponent},
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '**', redirectTo: '/home' }
 ];
 
 @NgModule({

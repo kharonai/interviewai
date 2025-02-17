@@ -10,7 +10,6 @@
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-white py-8 px-6 shadow-md rounded-lg sm:px-10">
       <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
-
         <!-- Full Name Input -->
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
@@ -47,6 +46,15 @@
                 class="block min-w-0 grow py-2 pr-3 pl-2 text-base text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm"
                 placeholder="Software Engineer">
             </div>
+          </div>
+        </div>
+
+        <!-- Resume File Input -->
+        <div>
+          <label for="resume" class="block text-sm font-medium text-gray-700">Resume</label>
+          <div class="mt-2">
+            <input type="file" id="resume" (change)="onResumeSelected($event)" required
+              class="block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-white focus:outline-none" />
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -9,26 +10,32 @@ import { AuthService } from '../../services/auth.service';
 export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   dropdownOpen: boolean = false;
-  userProfileImage: string = ''; // Store user's profile image
+  private closeDropdownTimer: any;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.authService.isAuthenticated().subscribe(status => {
       this.isLoggedIn = status;
-      if (this.isLoggedIn) {
-        this.userProfileImage = this.authService.getProfileImage();
-      }
     });
   }
 
-  toggleDropdown(): void {
-    this.dropdownOpen = !this.dropdownOpen;
+  toggleDropdown(open: boolean): void {
+    if (open) {
+      if (this.closeDropdownTimer) {
+        clearTimeout(this.closeDropdownTimer);
+      }
+      this.dropdownOpen = true;
+    } else {
+      // Delay closing the dropdown for 300ms so user can move into it
+      this.closeDropdownTimer = setTimeout(() => {
+        this.dropdownOpen = false;
+      }, 300);
+    }
   }
 
   logout(): void {
     this.authService.logout();
-    this.dropdownOpen = false;
-    this.isLoggedIn = false;
+    this.router.navigate(['/home']);
   }
 }
