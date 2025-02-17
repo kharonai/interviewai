@@ -9,8 +9,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
   animations: [
     trigger('routeAnimations', [
       transition('* <=> *', [
-        style({ opacity: 0, transform: 'scale(0.9) translateY(30px) rotateX(20deg)' }), // More dramatic start
-        animate('1000ms ease-out', style({ opacity: 1, transform: 'scale(1) translateY(0) rotateX(0)' })) // Slower and more visible
+        style({ opacity: 0 }),
+        animate('300ms ease-in', style({ opacity: 1 }))
       ])
     ])
   ]

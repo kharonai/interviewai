@@ -15,21 +15,21 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { animation } from '@angular/animations';
 
 const routes: Routes = [
-  { path: '', component: LandingComponent, data: { animation: 'LandingPage'} }, // Home page
-  { path: 'signup', component: SignupComponent, data: { animation: 'SignupPage'} }, // Sign-Up
-  { path: 'login', component: LoginComponent, data: { animation: 'LoginPage'} }, // Login
-  { path: 'dashboard', component: DashboardComponent, data: { animation: 'DashboardPage'} }, // Dashboard,
-  { path: 'start-interview', component: InterviewSetupComponent, data: { animation: 'StartInterviewPage'} }, // New Interview
-  { path: 'interview', component: InterviewComponent, data: { animation: 'InterviewPage'} }, // Interview
-  { path: 'interview-feedback', component: InterviewFeedbackComponent, data: { animation: 'InterviewFeedbackPage'} }, // Interview
-  { path: 'interview-setup', component: InterviewSetupComponent, data: { animation: 'InterviewSetupPage'} }, // Interview
-  { path: 'settings', component: ProfileSettingsComponent, data: { animation: 'ProfileSettingsPage'} },
-  { path: 'home', component: HomeComponent, data: { animation: 'HomePage'} },
+  { path: '', component: LandingComponent}, // Home page
+  { path: 'signup', component: SignupComponent}, // Sign-Up
+  { path: 'login', component: LoginComponent}, // Login
+  { path: 'dashboard', component: DashboardComponent}, // Dashboard,
+  { path: 'start-interview', component: InterviewSetupComponent}, // New Interview
+  { path: 'interview', component: InterviewComponent}, // Interview
+  { path: 'interview-feedback', component: InterviewFeedbackComponent}, // Interview
+  { path: 'interview-setup', component: InterviewSetupComponent}, // Interview
+  { path: 'settings', component: ProfileSettingsComponent},
+  { path: 'home', component: HomeComponent},
 ];
 
 @NgModule({
   imports: [
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
     RouterModule.forRoot(routes)],
