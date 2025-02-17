@@ -1,39 +1,15 @@
-<header class="absolute inset-x-0 top-0 z-50 bg-white shadow-md">
-  <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-    <!-- Logo -->
-    <div class="flex lg:flex-1">
-      <a [routerLink]="isLoggedIn ? '/dashboard' : '/'"  class="-m-1.5 p-1.5 flex items-center">
-        <lucide-icon name="brain-circuit" class="h-8 w-8 text-indigo-600"></lucide-icon>
-        <span class="ml-2 text-lg font-semibold text-gray-900">Mock Interview AI</span>
-      </a>
-    </div>
-
-    <!-- Desktop Navigation (Only If Logged In) -->
-    <div *ngIf="isLoggedIn" class="hidden lg:flex lg:gap-x-12">
-      <a routerLink="/dashboard" class="text-sm font-semibold text-gray-900 hover:text-indigo-600">Dashboard</a>
-      <a routerLink="/history" class="text-sm font-semibold text-gray-900 hover:text-indigo-600">Past Interviews</a>
-    </div>
-
-    <!-- Sign In / Sign Up (Visible If Not Logged In) -->
-    <div class="hidden lg:flex lg:flex-1 lg:justify-end items-center space-x-4" *ngIf="!isLoggedIn">
-      <a routerLink="/login" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500">Sign In</a>
-      <a routerLink="/signup" class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-500">Sign Up</a>
-    </div>
-
-    <!-- Profile Avatar & Dropdown Menu (Visible If Logged In) -->
-    <div class="hidden lg:flex lg:flex-1 lg:justify-end items-center space-x-4" *ngIf="isLoggedIn">
-      <div class="relative">
-        <!-- Profile Button (Avatar) -->
-        <button (click)="toggleDropdown()" title="User Profile" class="focus:outline-none">
-          <img [src]="userProfileImage" alt="User Avatar" class="h-10 w-10 rounded-full border border-gray-300 shadow-sm">
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div *ngIf="dropdownOpen" class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
-          <a routerLink="/settings" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
-          <button (click)="logout()" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">Sign Out</button>
-        </div>
-      </div>
-    </div>
-  </nav>
-</header>
+  <!-- Header -->
+  <header class="absolute top-0 left-0 w-full flex justify-between items-center px-12 py-6 bg-transparent">
+    <a [routerLink]="['/home']" class="text-lg font-bold tracking-wide flex items-center gap-2">
+      <lucide-icon name="aperture" class="w-6 h-6 text-black"></lucide-icon>
+    </a>
+    <nav class="hidden md:flex gap-8 text-gray-700 font-medium">
+      <a href="#" class="hover:text-black">Features</a>
+      <a href="#" class="hover:text-black">Benefits</a>
+      <a href="#" class="hover:text-black">Pricing</a>
+      <a href="#" class="hover:text-black">Contact</a>
+    </nav>
+    <button [routerLink]="['/login']" class="bg-black text-white px-5 py-2 rounded-full font-medium hover:bg-gray-900 transition">
+      Sign In
+    </button>
+  </header>

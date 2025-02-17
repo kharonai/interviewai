@@ -1,0 +1,73 @@
+/* Ensures proper spacing between hero and features */
+.mt-12 {
+    margin-top: 4rem;
+}
+
+/* Prevents scrolling */
+html, body {
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Background Gradient with Subtle Animation */
+.bg-gradient {
+    background: radial-gradient(circle at center, rgba(206, 173, 255, 0.4), rgba(161, 228, 178, 0.3), rgba(255, 200, 150, 0.3));
+    animation: radiateEffect 6s infinite alternate ease-in-out;
+}
+
+/* More Noticeable Gradient Animation */
+@keyframes radiateEffect {
+    0% { background-size: 100% 100%; }
+    50% { background-size: 120% 120%; }
+    100% { background-size: 100% 100%; }
+}
+
+/* Feature Cards Styling (Glassmorphism) */
+.feature-card {
+    background: rgba(255, 255, 255, 0.6); /* Soft frosted glass effect */
+    backdrop-filter: blur(20px);
+    padding: 1.8rem;
+    border-radius: 1rem;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, background-color 0.3s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Hover Effect */
+.feature-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Centered Icons */
+.feature-icon {
+    color: rgb(255, 116, 66);
+}
+
+/* Heading Color */
+.feature-heading {
+    color: rgb(255, 116, 66);
+    font-weight: 600;
+}
+
+/* Text Color */
+.text-gray-700 {
+    color: #374151;
+}
+
+/* Lightning Bolt Animation */
+@keyframes flicker {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.lightning-icon {
+    display: inline-block;
+    animation: flicker 1.2s infinite ease-in-out;
+}

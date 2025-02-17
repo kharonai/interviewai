@@ -14,6 +14,7 @@ import { InterviewSetupComponent } from './pages/interview-setup/interview-setup
 import { InterviewComponent } from './pages/interview/interview.component';
 import { InterviewFeedbackComponent } from './pages/interview-feedback/interview-feedback.component';
 import { ProfileSettingsComponent } from './pages/profile-settings/profile-settings.component';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ProfileSettingsComponent } from './pages/profile-settings/profile-setti
     InterviewSetupComponent,
     InterviewComponent,
     InterviewFeedbackComponent,
-    ProfileSettingsComponent
+    ProfileSettingsComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

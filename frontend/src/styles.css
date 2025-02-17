@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.gradient {
+    background: radial-gradient(circle at center, rgba(206, 173, 255, 0.4), rgba(161, 228, 178, 0.3), rgba(255, 200, 150, 0.3));
+    animation: radiateEffect 6s infinite alternate ease-in-out;
+}

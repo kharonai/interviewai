@@ -10,20 +10,26 @@ import { InterviewSetupComponent } from './pages/interview-setup/interview-setup
 import { InterviewComponent } from './pages/interview/interview.component';
 import { InterviewFeedbackComponent } from './pages/interview-feedback/interview-feedback.component';
 import { ProfileSettingsComponent } from './pages/profile-settings/profile-settings.component';
+import { HomeComponent } from './pages/home/home.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { animation } from '@angular/animations';
 
 const routes: Routes = [
-  { path: '', component: LandingComponent }, // Home page
-  { path: 'signup', component: SignupComponent }, // Sign-Up
-  { path: 'login', component: LoginComponent }, // Login
-  { path: 'dashboard', component: DashboardComponent }, // Dashboard,
-  { path: 'start-interview', component: InterviewSetupComponent }, // New Interview
-  { path: 'interview', component: InterviewComponent }, // Interview
-  { path: 'interview-feedback', component: InterviewFeedbackComponent }, // Interview
-  { path: 'settings', component: ProfileSettingsComponent },
+  { path: '', component: LandingComponent, data: { animation: 'LandingPage'} }, // Home page
+  { path: 'signup', component: SignupComponent, data: { animation: 'SignupPage'} }, // Sign-Up
+  { path: 'login', component: LoginComponent, data: { animation: 'LoginPage'} }, // Login
+  { path: 'dashboard', component: DashboardComponent, data: { animation: 'DashboardPage'} }, // Dashboard,
+  { path: 'start-interview', component: InterviewSetupComponent, data: { animation: 'StartInterviewPage'} }, // New Interview
+  { path: 'interview', component: InterviewComponent, data: { animation: 'InterviewPage'} }, // Interview
+  { path: 'interview-feedback', component: InterviewFeedbackComponent, data: { animation: 'InterviewFeedbackPage'} }, // Interview
+  { path: 'interview-setup', component: InterviewSetupComponent, data: { animation: 'InterviewSetupPage'} }, // Interview
+  { path: 'settings', component: ProfileSettingsComponent, data: { animation: 'ProfileSettingsPage'} },
+  { path: 'home', component: HomeComponent, data: { animation: 'HomePage'} },
 ];
 
 @NgModule({
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
     RouterModule.forRoot(routes)],
