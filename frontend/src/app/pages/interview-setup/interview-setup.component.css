@@ -1,0 +1,30 @@
+/* Apply the same radial gradient background */
+.bg-gradient {
+    background: radial-gradient(circle at center, rgba(206, 173, 255, 0.4), rgba(161, 228, 178, 0.3), rgba(255, 200, 150, 0.3));
+    animation: radiateEffect 6s infinite alternate ease-in-out;
+}
+
+/* Subtle gradient animation */
+@keyframes radiateEffect {
+    0% { background-size: 100% 100%; }
+    50% { background-size: 120% 120%; }
+    100% { background-size: 100% 100%; }
+}
+
+.interview-setup {
+    padding-top: 0;
+    padding-bottom: 5rem;
+}
+
+.form {
+    margin-bottom: 5rem;
+}
+
+.step-line {
+    margin-left: 1.5rem;
+    margin-right: 1rem;
+}
+
+.progress-container {
+    min-width: 50rem;
+}

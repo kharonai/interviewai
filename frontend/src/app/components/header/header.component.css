@@ -1,0 +1,8 @@
+/* header {
+    background-color: white;
+} */
+
+header {
+    background-color: white !important;
+    transition: none !important; /* Disables any background transition */
+  }

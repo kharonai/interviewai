@@ -1,39 +1,32 @@
-<div class="min-h-screen bg-gray-100 pt-20">
-    <!-- Page Header -->
-    <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
-      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900">Start a New Interview</h1>
-      </div>
-    </header>
-
-<!-- Step Progress Indicator (With Proper Spacing) -->
-<div class="mx-auto max-w-2xl px-6 pt-10 pb-6">
-    <div class="flex justify-between items-center">
-      <div *ngFor="let s of steps; let i = index" class="flex items-center">
-        <!-- Step Circle -->
-        <div class="w-10 h-10 flex items-center justify-center rounded-full text-sm font-semibold"
-          [ngClass]="{
-            'bg-indigo-600 text-white': step > i + 1,
-            'bg-indigo-300 text-white': step === i + 1,
-            'bg-gray-300 text-gray-700': step < i + 1
-          }">
-          {{ i + 1 }}
+<div class="min-h-[60vh] flex flex-col justify-center bg-gradient pt-10 interview-setup">
+  <!-- Step Progress Indicator (With Proper Spacing) -->
+  <div class="mx-auto max-w-2xl px-6 pt-10 pb-6 progress-container">
+      <div class="flex justify-between items-center">
+        <div *ngFor="let s of steps; let i = index" class="flex items-center">
+          <!-- Step Circle -->
+          <div class="w-10 h-10 flex items-center justify-center rounded-full text-sm font-semibold"
+            [ngClass]="{
+              'bg-indigo-600 text-white': step > i + 1,
+              'bg-indigo-300 text-white': step === i + 1,
+              'bg-gray-300 text-gray-700': step < i + 1
+            }">
+            {{ i + 1 }}
+          </div>
+    
+          <!-- Step Label -->
+          <div class="ml-2 text-sm font-semibold"
+            [ngClass]="{ 'text-indigo-600': step >= i + 1, 'text-gray-500': step < i + 1 }">
+            {{ s }}
+          </div>
+    
+          <!-- Progress Line -->
+          <div *ngIf="i < steps.length - 1" class="w-12 h-1 bg-gray-300 step-line"
+            [ngClass]="{ 'bg-indigo-600': step > i + 1 }"></div>
         </div>
-  
-        <!-- Step Label -->
-        <div class="ml-2 text-sm font-semibold"
-          [ngClass]="{ 'text-indigo-600': step >= i + 1, 'text-gray-500': step < i + 1 }">
-          {{ s }}
-        </div>
-  
-        <!-- Progress Line -->
-        <div *ngIf="i < steps.length - 1" class="w-12 h-1 bg-gray-300"
-          [ngClass]="{ 'bg-indigo-600': step > i + 1 }"></div>
       </div>
     </div>
-  </div>
   
-    <main class="mx-auto max-w-2xl px-6 py-10 sm:px-6 lg:px-8 bg-white shadow-lg rounded-2xl transition-all duration-500 ease-in-out">
+    <main class="mx-auto max-w-[50rem] w-full px-10 py-12 sm:px-12 lg:px-16 bg-white shadow-lg rounded-2xl transition-all duration-500 ease-in-out form">
       <form [formGroup]="interviewForm" (ngSubmit)="onSubmit()">
         <!-- Animated Form Steps -->
         <div [@fadeIn] *ngIf="step === 1">

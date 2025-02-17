@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-interview-setup',
@@ -28,7 +29,7 @@ export class InterviewSetupComponent {
   selectedMode: string = '';
   selectedDifficulty: string = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.interviewForm = this.fb.group({
       role: ['', Validators.required],
       company: ['', Validators.required],
@@ -70,6 +71,8 @@ export class InterviewSetupComponent {
       mode: this.selectedMode,
       difficulty: this.selectedDifficulty
     });
-    // TODO: Route to actual interview session
+
+    // Navigate to /interview after form submission
+    this.router.navigate(['/interview']);
   }
 }
