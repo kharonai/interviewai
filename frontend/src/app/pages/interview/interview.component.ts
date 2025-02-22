@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { InterviewService, Message } from '../../services/interview.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { CodeEditorComponent } from 'src/app/components/code-editor/code-editor.component';
 
 @Component({
   selector: 'app-interview',
@@ -10,11 +11,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./interview.component.css']
 })
 export class InterviewComponent implements OnInit, AfterViewChecked {
+  @ViewChild(CodeEditorComponent) codeEditor!: CodeEditorComponent;
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
   interviewMode: 'text' | 'voice' = 'text';
   chatMessages: { sender: 'user' | 'ai', text: string }[] = [];
   userMessageControl = new FormControl('');
+  code: string = ''; // Store updated code for Monaco
   
   // Holds the full conversation history (system, user, and AI messages)
   conversation: Message[] = [];
@@ -56,6 +59,10 @@ export class InterviewComponent implements OnInit, AfterViewChecked {
     After this introduction, use the candidate's resume details (${resume}) to ask one or two follow-up questions. Then continue with three to four more detailed questions that explore the candidate's skills, experiences, and fit for the role. Each question should be concise (at most two sentences) and should be asked one at a time, waiting for the candidate's response before proceeding.
     
     Always maintain a friendly, empathetic, and professional tone. If the candidate’s response is vague or off-topic, ask a clarifying question to refocus the conversation. With every new message, include the entire conversation history in your context so that your questions remain relevant and build upon previous answers.
+
+    You are not a chatbot; you are a real person conducting an interview. Do not say "I am an AI" or "I am a chatbot." Instead, act like a real interviewer. Do not simulate an interview. Do not act like a candidate; you are the interviewer. Do not address yourself as "I'm [Your Name]". Do not say "I am here to help you with your interview." Instead, act like a real interviewer.
+    
+    Your responses should never say "Candidate" or "User".
     `
     };
     
@@ -67,6 +74,95 @@ export class InterviewComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     this.scrollToBottom();
+  }
+
+  reviewCode(): void {
+    const setupData = JSON.parse(localStorage.getItem('interviewSetup') || '{}');
+    const role = setupData.role || 'the role';
+    const company = setupData.company || 'the company';
+    const resume = setupData.resume || 'no resume provided';
+    const difficulty = setupData.difficulty || 'medium';
+  
+    const code = this.codeEditor.getCurrentCode(); // Get current code
+    this.aiThinking = true;
+  
+    this.interviewService.getNextMessage([...this.conversation, { 
+      role: 'system', 
+      content: `
+          You are an AI-powered coding interviewer and hiring manager conducting a technical interview.
+  
+          **Instructions:**
+          - **Do not modify the candidate's code.**
+          - **Provide exactly ONE hint** to help them overcome their issue.
+          - **Your hint should be in the same language as the code.**
+          - **Insert your hint as a comment directly in the code, without altering any logic.**
+          - **Your response must contain the entire code, untouched, with only your comment added.**
+  
+          **Return the response strictly in this format with no extra text:**
+          \`\`\`${this.codeEditor.language}\n
+          // (Your hint as a concise comment relevant to the error)
+          (Original code exactly as given)
+          \`\`\`
+  
+          DO NOT EDIT THE USERS ORIGINAL CODE OR CORRECT IT IN ANYWAY!
+          **Candidate's Code:**
+          ${code}
+        `
+    }])
+      .subscribe({
+        next: (response) => {
+          this.aiThinking = false;
+          this.questionCount++; // Increment AI question count
+  
+          // ✅ Remove code block formatting from AI response
+          let aiResponse = response.message.replace(/```[\s\S]*?\n/, '').replace(/```$/, '');
+  
+          // ✅ Extract AI-generated comment (first line is assumed to be the comment)
+          const commentMatch = aiResponse.match(/\/\/.*/);
+          let aiComment = commentMatch ? commentMatch[0] : '';
+  
+          // ✅ Ensure AI used the correct comment syntax
+          const commentSyntaxMatch = aiComment.match(/^(\S+)\s/); // Extracts the comment prefix (e.g., "//", "#", etc.)
+          const commentSyntax = commentSyntaxMatch ? commentSyntaxMatch[1] : "//"; // Default to "//" if not found
+  
+          // ✅ Wrap comments at 60 characters while preserving words
+          aiComment = this.wrapComment(aiComment, 60, commentSyntax);
+  
+          // ✅ Reinsert the AI-generated comment into the original code
+          const updatedCode = `${aiComment}\n${code}`;
+  
+          // ✅ Update the code editor with cleaned AI feedback
+          this.code = updatedCode;
+        },
+        error: (err) => {
+          this.aiThinking = false;
+          console.error('Error fetching AI response:', err);
+        }
+      });
+  }
+  
+  /**
+   * ✅ Helper Function to Wrap Comments at 60 Characters
+   * - Preserves words when splitting
+   * - Maintains the original comment syntax (e.g., //, #, --)
+   * - Ensures prefix (`//`) is **only** added at the start of each line.
+   */
+  wrapComment(comment: string, maxLength: number, prefix: string): string {
+    const words = comment.replace(/^(\S+\s)/, '').split(" "); // Remove initial "//" before splitting
+    let wrappedComment = prefix; // Start with the comment syntax
+    let line = prefix; // Current line with prefix
+
+    for (let word of words) {
+      if ((line.length + word.length + 1) > maxLength) { // +1 for space
+        wrappedComment += "\n" + prefix + " " + word; // Start new line with prefix
+        line = prefix + " " + word; // Reset line
+      } else {
+        line += " " + word; // Continue line
+        wrappedComment += " " + word;
+      }
+    }
+
+    return wrappedComment;
   }
 
   startInterview(): void {
@@ -284,7 +380,12 @@ export class InterviewComponent implements OnInit, AfterViewChecked {
       }
     });
   }
-  
-  
+
+  getCodeFromEditor() {
+    if (this.codeEditor) {
+      const currentCode = this.codeEditor.getCurrentCode();
+      console.log('Current Code from Editor:', currentCode);
+    }
+  }
   
 }

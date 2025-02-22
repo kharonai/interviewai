@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { LoginComponent } from './pages/login/login.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, icons } from 'lucide-angular';
 import { LandingComponent } from './pages/landing/landing.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -16,6 +16,14 @@ import { InterviewFeedbackComponent } from './pages/interview-feedback/interview
 import { ProfileSettingsComponent } from './pages/profile-settings/profile-settings.component';
 import { HomeComponent } from './pages/home/home.component';
 import { HttpClientModule } from '@angular/common/http';
+import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
+import { CodeEditorComponent } from './components/code-editor/code-editor.component';
+
+const monacoConfig: NgxMonacoEditorConfig = {
+  baseUrl: 'app-name/assets', // configure base path for monaco editor. Starting with version 8.0.0 it defaults to './assets'. Previous releases default to '/assets'
+  defaultOptions: { scrollBeyondLastLine: false }, // pass default options to be used
+  onMonacoLoad: () => { console.log((<any>window).monaco); } // here monaco object will be available as window.monaco use this function to extend monaco editor functionalities.
+};
 
 @NgModule({
   declarations: [
@@ -29,15 +37,18 @@ import { HttpClientModule } from '@angular/common/http';
     InterviewComponent,
     InterviewFeedbackComponent,
     ProfileSettingsComponent,
-    HomeComponent
+    HomeComponent,
+    CodeEditorComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
     LucideAngularModule.pick(icons),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MonacoEditorModule.forRoot(monacoConfig)
   ],
   providers: [],
   bootstrap: [AppComponent]
