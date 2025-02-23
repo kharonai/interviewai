@@ -1,0 +1,80 @@
+<div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6 gradient w-full">
+
+    <!-- Header Section (Full Width) -->
+    <div class="max-w-4xl w-full bg-white shadow-md rounded-xl p-4 mb-6 flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-gray-900">Mock Interview</h2>
+      <div class="flex items-center space-x-4">
+        <!-- Mode Switch -->
+        <button (click)="toggleMode()"
+          class="px-4 py-2 rounded-md text-white font-semibold"
+          [ngClass]="interviewMode === 'voice' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-400 hover:bg-gray-500'"
+          [disabled]="interviewEnded">
+          {{ interviewMode === 'voice' ? 'Voice Mode' : 'Text Mode' }}
+        </button>
+  
+        <!-- End Interview -->
+        <button (click)="endInterview()" 
+          class="px-4 py-2 rounded-md text-white font-semibold transition-all duration-200"
+          [ngClass]="interviewEnded ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-400'"
+          [disabled]="interviewEnded">
+          End Interview
+        </button>
+      </div>
+    </div>
+  
+    <!-- Main Interview Container -->
+    <div class="max-w-4xl w-full grid grid-cols-2 gap-6">
+      
+      <!-- Coding Challenge Section -->
+      <div class="bg-white shadow-md rounded-xl p-6 flex flex-col h-[600px]">
+        <h2 class="text-lg font-semibold text-gray-900">Coding Challenge</h2>
+        <p class="text-sm text-gray-600 mt-2">
+          Write a function to determine if a given string is a palindrome.
+        </p>
+  
+        <!-- Code Editor -->
+        <textarea class="w-full mt-4 flex-grow p-3 border rounded-lg font-mono text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 h-[450px]"></textarea>
+  
+        <div class="flex justify-end mt-4">
+          <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition" (click)="requestHelp()">
+            I'm Stuck
+          </button>
+        </div>
+      </div>
+  
+      <!-- Chat Window Section -->
+      <div class="bg-white shadow-md rounded-xl p-6 flex flex-col h-[600px]">
+        <h2 class="text-lg font-semibold text-gray-900">Interview Chat</h2>
+  
+        <div class="flex-grow overflow-y-auto p-3 bg-gray-100 rounded-lg">
+          <div *ngFor="let message of chatMessages; let last = last" class="mb-4">
+            <!-- AI Message -->
+            <div *ngIf="message.sender === 'ai'" class="bg-gray-200 text-gray-900 p-3 rounded-lg max-w-[80%] self-start animate-fadeIn">
+              {{ message.text }}
+            </div>
+  
+            <!-- User Message -->
+            <div *ngIf="message.sender === 'user'" class="bg-indigo-500 text-white p-3 rounded-lg max-w-[80%] self-end ml-auto animate-fadeIn">
+              {{ message.text }}
+            </div>
+          </div>
+        </div>
+  
+        <!-- Chat Input -->
+        <div class="mt-4 flex">
+          <input [formControl]="userMessageControl" type="text" 
+            class="flex-grow p-3 rounded-md border focus:ring-2 focus:ring-indigo-600 outline-none transition-all duration-200"
+            placeholder="Type your response..." 
+            [attr.disabled]="interviewMode === 'voice' || interviewEnded ? true : null">
+  
+          <button *ngIf="interviewMode === 'text' && !interviewEnded" 
+            (click)="sendMessage()" 
+            class="ml-3 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-500">
+            Send
+          </button>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  

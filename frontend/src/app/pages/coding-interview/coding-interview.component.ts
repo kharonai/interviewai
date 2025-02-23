@@ -1,12 +1,12 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-interview',
-  templateUrl: './interview.component.html',
-  styleUrls: ['./interview.component.css']
+  selector: 'app-coding-interview',
+  templateUrl: './coding-interview.component.html',
+  styleUrls: ['./coding-interview.component.css']
 })
-export class InterviewComponent implements AfterViewChecked {
+export class CodingInterviewComponent  {
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
   interviewMode: 'text' | 'voice' = 'text';
