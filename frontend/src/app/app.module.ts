@@ -16,6 +16,7 @@ import { InterviewFeedbackComponent } from './pages/interview-feedback/interview
 import { ProfileSettingsComponent } from './pages/profile-settings/profile-settings.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CodingInterviewComponent } from './pages/coding-interview/coding-interview.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { CodingInterviewComponent } from './pages/coding-interview/coding-interv
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     ReactiveFormsModule,
     LucideAngularModule.pick(icons),
     BrowserAnimationsModule

@@ -1,14 +1,28 @@
 <header class="w-full fixed top-0 left-0 z-50 flex justify-between items-center px-12 py-6 bg-white shadow-md">
-  <a [routerLink]="['/home']" class="text-lg font-bold tracking-wide flex items-center gap-2">
+  <!-- The icon now routes to /dashboard if logged in, otherwise /home -->
+  <a [routerLink]="isLoggedIn ? ['/dashboard'] : ['/home']" class="text-lg font-bold tracking-wide flex items-center gap-2">
     <lucide-icon name="aperture" class="w-6 h-6 text-black"></lucide-icon>
+    Interview AI
   </a>
-  <nav class="md:flex gap-8 text-gray-700 font-medium">
+  <nav class="hidden md:flex gap-8 text-gray-700 font-medium">
     <a href="#" class="hover:text-black">Features</a>
     <a href="#" class="hover:text-black">Benefits</a>
     <a href="#" class="hover:text-black">Pricing</a>
     <a href="#" class="hover:text-black">Contact</a>
   </nav>
-  <button [routerLink]="['/login']" class="bg-black text-white px-5 py-2 rounded-full font-medium hover:bg-gray-900 transition">
-    Sign In
-  </button>
+  <div *ngIf="isLoggedIn; else signInTemplate" class="relative" 
+       (mouseenter)="toggleDropdown(true)" 
+       (mouseleave)="toggleDropdown(false)">
+    <!-- Always display an avatar icon -->
+    <lucide-icon name="user" class="w-10 h-10 text-gray-700 cursor-pointer"></lucide-icon>
+    <div *ngIf="dropdownOpen" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+      <a routerLink="/settings" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
+      <a (click)="logout()" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">Sign Out</a>
+    </div>
+  </div>
+  <ng-template #signInTemplate>
+    <button [routerLink]="['/login']" class="bg-black text-white px-5 py-2 rounded-full font-medium hover:bg-gray-900 transition">
+      Sign In
+    </button>
+  </ng-template>
 </header>

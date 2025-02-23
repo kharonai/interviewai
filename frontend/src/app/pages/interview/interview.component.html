@@ -1,93 +1,77 @@
 <div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6 gradient">
-
-    <!-- Progress Indicator & End Interview -->
-    <div class="max-w-4xl w-full bg-white shadow-md rounded-xl p-4 mb-6 flex justify-between items-center">
-      <h2 class="text-xl font-semibold text-gray-900">Mock Interview</h2>
-      <div class="flex items-center space-x-4">
-        <!-- Mode Switch -->
-        <button (click)="toggleMode()"
-          class="px-4 py-2 rounded-md text-white font-semibold"
-          [ngClass]="interviewMode === 'voice' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-400 hover:bg-gray-500'"
-          [disabled]="interviewEnded">
-          {{ interviewMode === 'voice' ? 'Voice Mode' : 'Text Mode' }}
-        </button>
-        
-        <!-- End Interview (Disabled When Interview Ends) -->
-        <button (click)="endInterview()" 
-          class="px-4 py-2 rounded-md text-white font-semibold transition-all duration-200"
-          [ngClass]="interviewEnded ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-400'"
-          [disabled]="interviewEnded">
-          End Interview
+  <!-- Progress Indicator & End Interview -->
+  <div class="max-w-4xl w-full bg-white shadow-md rounded-xl p-4 mb-6 flex justify-between items-center">
+    <h2 class="text-xl font-semibold text-gray-900">Mock Interview</h2>
+    <div class="flex items-center space-x-4">
+      <button (click)="toggleMode()"
+              class="px-4 py-2 rounded-md text-white font-semibold"
+              [ngClass]="interviewMode === 'voice' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-400 hover:bg-gray-500'"
+              [disabled]="interviewEnded">
+        {{ interviewMode === 'voice' ? 'Voice Mode' : 'Text Mode' }}
+      </button>
+      <button (click)="endInterview()"
+              class="px-4 py-2 rounded-md text-white font-semibold transition-all duration-200"
+              [ngClass]="interviewEnded ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-400'"
+              [disabled]="interviewEnded">
+        End Interview
+      </button>
+      <div *ngIf="interviewEnded" class="mt-6">
+        <button (click)="generateFeedback()"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-500">
+          Get Interview Feedback
         </button>
       </div>
+      
     </div>
-  
-    <!-- Main Interview Container -->
-    <div class="grid grid-cols-3 gap-6 max-w-4xl w-full bg-white shadow-md rounded-xl p-6 relative">
-  
-      <!-- Chat Window (Auto Scrolls to Bottom & Hides Scroll Bar) -->
-      <div class="col-span-3 flex flex-col space-y-4 h-[500px] overflow-y-auto pb-24 px-4 no-scrollbar"
-           #chatContainer>
-        <div *ngFor="let message of chatMessages; let last = last" 
-             class="flex w-full"
-             [ngClass]="{'mb-16': last, 'mb-4': !last}"> <!-- Ensures spacing for last message -->
-  
-          <!-- AI Message (Left Side) -->
-          <div *ngIf="message.sender === 'ai'" 
-               class="bg-gray-200 text-gray-900 p-3 rounded-lg max-w-[80%] self-start animate-fadeIn">
-            {{ message.text }}
-          </div>
-  
-          <!-- User Message (Right Side) -->
-          <div *ngIf="message.sender === 'user'" 
-               class="bg-indigo-500 text-white p-3 rounded-lg max-w-[80%] self-end ml-auto animate-fadeIn">
-            {{ message.text }}
-          </div>
-        </div>
-  
-        <!-- AI Typing Animation -->
-        <div *ngIf="aiThinking" class="flex self-start space-x-2 mb-16">
-          <div class="bg-gray-200 p-3 rounded-lg max-w-[80%] self-start flex space-x-1 items-center animate-fadeIn">
-            <div class="dot w-2 h-2 bg-gray-600 rounded-full animate-bounce"></div>
-            <div class="dot w-2 h-2 bg-gray-600 rounded-full animate-bounce delay-100"></div>
-            <div class="dot w-2 h-2 bg-gray-600 rounded-full animate-bounce delay-200"></div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Bottom: User Input Field (Disabled in Voice Mode or After Interview Ends) -->
-      <div class="absolute bottom-0 left-0 w-full bg-white border-t p-4 flex items-center">
-  
-        <!-- User Input -->
-        <input [formControl]="userMessageControl" type="text" 
-          class="flex-grow p-3 rounded-md border focus:ring-2 focus:ring-indigo-600 outline-none transition-all duration-200"
-          [class.bg-gray-200]="interviewMode === 'voice' || interviewEnded"
-          placeholder="Type your response..." 
-          [attr.disabled]="interviewMode === 'voice' || interviewEnded ? true : null">
-  
-        <!-- Mic Button for Voice Mode -->
-        <button *ngIf="interviewMode === 'voice' && !interviewEnded"
-          (mousedown)="startVoiceRecognition()"
-          (mouseup)="stopVoiceRecognition()"
-          (mouseleave)="stopVoiceRecognition()"
-          class="ml-3 px-4 py-2 rounded-md text-white flex items-center transition-all duration-200"
-          [ngClass]="micActive ? 'bg-green-500 shadow-lg' : 'bg-indigo-600 hover:bg-indigo-500'">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v14m4-4a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          Hold to Speak
-        </button>
-  
-        <!-- Send Button for Text Mode -->
-        <button *ngIf="interviewMode === 'text' && !interviewEnded" 
-          (click)="sendMessage()" 
-          class="ml-3 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-500">
-          Send
-        </button>
-  
-      </div>
-  
-    </div>
-  
   </div>
-  
+
+  <!-- Main Interview Container -->
+  <div class="grid grid-cols-3 gap-6 max-w-4xl w-full bg-white shadow-md rounded-xl p-6 relative">
+    <!-- Chat Window -->
+    <div class="col-span-3 flex flex-col space-y-4 h-[500px] overflow-y-auto pb-24 px-4 no-scrollbar" #chatContainer>
+      <div *ngFor="let message of chatMessages; let last = last" class="flex w-full" [ngClass]="{'mb-16': last, 'mb-4': !last}">
+        <!-- AI Message (Left Side) -->
+        <div *ngIf="message.sender === 'ai'" class="bg-gray-200 text-gray-900 p-3 rounded-lg max-w-[80%] self-start animate-fadeIn">
+          {{ message.text }}
+        </div>
+        <!-- User Message (Right Side) -->
+        <div *ngIf="message.sender === 'user'" class="bg-indigo-500 text-white p-3 rounded-lg max-w-[80%] self-end ml-auto animate-fadeIn">
+          {{ message.text }}
+        </div>
+      </div>
+      <!-- AI Typing Animation -->
+      <div *ngIf="aiThinking" class="flex self-start space-x-2 mb-16">
+        <div class="bg-gray-200 p-3 rounded-lg max-w-[80%] self-start flex space-x-1 items-center animate-fadeIn">
+          <div class="dot w-2 h-2 bg-gray-600 rounded-full animate-bounce"></div>
+          <div class="dot w-2 h-2 bg-gray-600 rounded-full animate-bounce delay-100"></div>
+          <div class="dot w-2 h-2 bg-gray-600 rounded-full animate-bounce delay-200"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom: User Input Field -->
+    <div class="absolute bottom-0 left-0 w-full bg-white border-t p-4 flex items-center">
+      <input [formControl]="userMessageControl" type="text"
+             class="flex-grow p-3 rounded-md border focus:ring-2 focus:ring-indigo-600 outline-none transition-all duration-200"
+             [class.bg-gray-200]="interviewMode === 'voice' || interviewEnded"
+             placeholder="Type your response..."
+             [attr.disabled]="interviewMode === 'voice' || interviewEnded ? true : null">
+      <button *ngIf="interviewMode === 'voice' && !interviewEnded"
+              (mousedown)="startVoiceRecognition()"
+              (mouseup)="stopVoiceRecognition()"
+              (mouseleave)="stopVoiceRecognition()"
+              class="ml-3 px-4 py-2 rounded-md text-white flex items-center transition-all duration-200"
+              [ngClass]="micActive ? 'bg-green-500 shadow-lg' : 'bg-indigo-600 hover:bg-indigo-500'">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v14m4-4a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        Hold to Speak
+      </button>
+      <button *ngIf="interviewMode === 'text' && !interviewEnded"
+              (click)="sendMessage()"
+              class="ml-3 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-500">
+        Send
+      </button>
+    </div>
+  </div>
+</div>

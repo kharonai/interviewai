@@ -72,6 +72,15 @@ export class InterviewSetupComponent {
       difficulty: this.selectedDifficulty
     });
 
+    // Save the interview setup data to local storage
+    const setupData = {
+      role: this.selectedRole,
+      company: this.selectedCompany,
+      mode: this.selectedMode,
+      difficulty: this.selectedDifficulty
+    };
+    localStorage.setItem('interviewSetup', JSON.stringify(setupData));
+
     // Navigate to /interview after form submission
     this.router.navigate(['/interview']);
   }

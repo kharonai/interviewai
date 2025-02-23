@@ -11,18 +11,35 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
 
-  onLogin() {
+  onLogin(): void {
     if (this.loginForm.valid) {
-      console.log('Logging in:', this.loginForm.value);
-      this.authService.login(); // Set login state
-      this.router.navigate(['/dashboard']); // Redirect to dashboard after login
+      const { email, password } = this.loginForm.value;
+      console.log('Logging in:', { email, password });
+      this.authService.login(email, password).subscribe({
+        next: (response: any) => {
+          console.log('Login successful', response);
+          // Assume the response has a "user" property containing user data
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          this.authService.setAuthenticated(true);
+          this.authService.setCurrentUser(response.user);
+          this.router.navigate(['/dashboard']);
+        },
+        error: (error) => {
+          console.error('Login failed', error);
+          // Optionally show an error message to the user
+        }
+      });
     }
   }
 }
