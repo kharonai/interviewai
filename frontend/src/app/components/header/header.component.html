@@ -1,15 +1,14 @@
-  <!-- Header -->
-  <header class="w-full flex justify-between items-center px-12 py-6 bg-white">
-    <a [routerLink]="['/home']" class="text-lg font-bold tracking-wide flex items-center gap-2">
-      <lucide-icon name="aperture" class="w-6 h-6 text-black"></lucide-icon>
-    </a>
-    <nav class="md:flex gap-8 text-gray-700 font-medium">
-      <a href="#" class="hover:text-black">Features</a>
-      <a href="#" class="hover:text-black">Benefits</a>
-      <a href="#" class="hover:text-black">Pricing</a>
-      <a href="#" class="hover:text-black">Contact</a>
-    </nav>
-    <button [routerLink]="['/login']" class="bg-black text-white px-5 py-2 rounded-full font-medium hover:bg-gray-900 transition">
-      Sign In
-    </button>
-  </header>
+<header class="w-full fixed top-0 left-0 z-50 flex justify-between items-center px-12 py-6 bg-white shadow-md">
+  <a [routerLink]="['/home']" class="text-lg font-bold tracking-wide flex items-center gap-2">
+    <lucide-icon name="aperture" class="w-6 h-6 text-black"></lucide-icon>
+  </a>
+  <nav class="md:flex gap-8 text-gray-700 font-medium">
+    <a href="#" class="hover:text-black">Features</a>
+    <a href="#" class="hover:text-black">Benefits</a>
+    <a href="#" class="hover:text-black">Pricing</a>
+    <a href="#" class="hover:text-black">Contact</a>
+  </nav>
+  <button [routerLink]="['/login']" class="bg-black text-white px-5 py-2 rounded-full font-medium hover:bg-gray-900 transition">
+    Sign In
+  </button>
+</header>
