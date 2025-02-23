@@ -11,9 +11,8 @@ import { InterviewComponent } from './pages/interview/interview.component';
 import { InterviewFeedbackComponent } from './pages/interview-feedback/interview-feedback.component';
 import { ProfileSettingsComponent } from './pages/profile-settings/profile-settings.component';
 import { HomeComponent } from './pages/home/home.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { animation } from '@angular/animations';
 import { AuthGuard } from './guards/auth.guard';
+import { CodingInterviewComponent } from './pages/coding-interview/coding-interview.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent}, // Home page
@@ -23,8 +22,9 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent}, // Dashboard,
   { path: 'start-interview', component: InterviewSetupComponent}, // New Interview
   { path: 'interview', component: InterviewComponent}, // Interview
-  { path: 'interview-feedback', component: InterviewFeedbackComponent}, // Interview
+  { path: 'interview-feedback', component: InterviewFeedbackComponent}, // Interview Feedback
   { path: 'interview-setup', component: InterviewSetupComponent}, // Interview
+  { path: 'coding-interview', component: CodingInterviewComponent}, // Coding Interview
   { path: 'settings', component: ProfileSettingsComponent},
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' }

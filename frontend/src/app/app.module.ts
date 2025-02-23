@@ -15,6 +15,7 @@ import { InterviewComponent } from './pages/interview/interview.component';
 import { InterviewFeedbackComponent } from './pages/interview-feedback/interview-feedback.component';
 import { ProfileSettingsComponent } from './pages/profile-settings/profile-settings.component';
 import { HomeComponent } from './pages/home/home.component';
+import { CodingInterviewComponent } from './pages/coding-interview/coding-interview.component';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
@@ -29,7 +30,8 @@ import { HttpClientModule } from '@angular/common/http';
     InterviewComponent,
     InterviewFeedbackComponent,
     ProfileSettingsComponent,
-    HomeComponent
+    HomeComponent,
+    CodingInterviewComponent
   ],
   imports: [
     BrowserModule,

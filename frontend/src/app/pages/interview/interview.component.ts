@@ -287,4 +287,12 @@ export class InterviewComponent implements OnInit, AfterViewChecked {
   
   
   
+
+  requestHelp(): void {
+    const helpMessage = "I'm here to assist you. Please ask your question.";
+    this.chatMessages.push({ sender: 'ai', text: helpMessage });
+    if (this.interviewMode === 'voice') {
+      this.speakAIMessage(helpMessage);
+    }
+  }
 }

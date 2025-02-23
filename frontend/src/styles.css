@@ -7,6 +7,54 @@
     animation: radiateEffect 6s infinite alternate ease-in-out;
 }
 
+/* Custom global scrollbar */
+::-webkit-scrollbar {
+    width: 4px; /* Reduce the width for a smaller scrollbar */
+    height: 4px; /* Also make horizontal scrollbars smaller */
+}
+
+/* Scrollbar track (background) */
+::-webkit-scrollbar-track {
+    background: transparent; /* Fully transparent background */
+}
+
+/* Scrollbar handle (the actual scrolling part) */
+::-webkit-scrollbar-thumb {
+    background: rgba(200, 200, 200, 0.8); /* Light grey */
+    border-radius: 10px; /* Rounded edges */
+}
+
+/* Hover effect for scrollbar */
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(180, 180, 180, 1); /* Slightly darker grey on hover */
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Apply scrollbar styles to all scrollable elements */
+* {
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: rgba(200, 200, 200, 0.8) transparent; /* Light grey scrollbar with transparent track */
+
+    /* WebKit (Chrome, Safari, Edge) */
+    &::-webkit-scrollbar {
+        width: 4px; /* Slim scrollbar */
+        height: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(200, 200, 200, 0.8); /* Light grey */
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(180, 180, 180, 1); /* Slightly darker on hover */
+    }
+}
+
+
+
 .loader {
     border: 5px solid #f3f3f3; /* Light grey */
     border-top: 5px solid #6366f1; /* Indigo */
