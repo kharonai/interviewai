@@ -18,6 +18,14 @@ import { HomeComponent } from './pages/home/home.component';
 import { CodingInterviewComponent } from './pages/coding-interview/coding-interview.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatComponent } from './components/chat/chat.component';
+import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
+import { CodeEditorComponent } from './components/code-editor/code-editor.component';
+
+const monacoConfig: NgxMonacoEditorConfig = {
+  baseUrl: 'app-name/assets', // configure base path for monaco editor. Starting with version 8.0.0 it defaults to './assets'. Previous releases default to '/assets'
+  defaultOptions: { scrollBeyondLastLine: false }, // pass default options to be used
+  onMonacoLoad: () => { console.log((<any>window).monaco); } // here monaco object will be available as window.monaco use this function to extend monaco editor functionalities.
+};
 
 @NgModule({
   declarations: [
@@ -33,7 +41,8 @@ import { ChatComponent } from './components/chat/chat.component';
     ProfileSettingsComponent,
     HomeComponent,
     CodingInterviewComponent,
-    ChatComponent
+    ChatComponent,
+    CodeEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +51,8 @@ import { ChatComponent } from './components/chat/chat.component';
     ReactiveFormsModule,
     LucideAngularModule.pick(icons),
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    MonacoEditorModule.forRoot(monacoConfig)
   ],
   providers: [],
   bootstrap: [AppComponent]
