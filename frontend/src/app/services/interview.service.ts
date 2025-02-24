@@ -29,5 +29,9 @@ export class InterviewService {
   getInterviewFeedback(data: InterviewFeedbackRequest): Observable<any> {
     return this.http.post<any>('http://localhost:3000/api/interview-feedback', data);
   }
+
+  getCompiledCode(code: string, language: string): Observable<any> {
+    return this.http.post<any>('http://localhost:3000/api/compile', { code, language });
+  }
   
 }

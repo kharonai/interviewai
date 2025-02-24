@@ -1,12 +1,9 @@
 // Load environment variables first
 import dotenv from 'dotenv';
-dotenv.config();
 
 // Set up __dirname for ES modules
 import { fileURLToPath } from 'url';
 import path from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Import required modules using ES module syntax
 import express from 'express';
@@ -16,6 +13,14 @@ import cors from 'cors';
 
 // Import OpenAI using the new default import syntax
 import OpenAI from 'openai';
+
+// Import additional modules
+import { exec } from 'child_process';
+import { v4 as uuidv4 } from 'uuid';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config();
 
 // Create an OpenAI instance with your API key
 const openai = new OpenAI({
@@ -250,6 +255,112 @@ app.post('/api/interview-feedback', async (req, res) => {
   } catch (error) {
     console.error('Error generating feedback:', error);
     res.status(500).json({ error: 'An error occurred while generating interview feedback.' });
+  }
+});
+
+// Define commands for supported languages
+const languageCommands = {
+  javascript: {
+    extension: 'js',
+    run: (filePath) => `node "${filePath}"`,
+  },
+  python: {
+    extension: 'py',
+    run: (filePath) => `python3 "${filePath}"`,
+  },
+  c: {
+    extension: 'c',
+    compile: (filePath) => `gcc "${filePath}" -o "${filePath}.out"`,
+    run: (filePath) => `"${filePath}.out"`,
+  },
+  cpp: {
+    extension: 'cpp',
+    compile: (filePath) => `g++ "${filePath}" -o "${filePath}.out"`,
+    run: (filePath) => `"${filePath}.out"`,
+  },
+  // Add more languages as needed...
+};
+
+// Helper function to run shell commands as a Promise
+const runCommand = (cmd) =>
+  new Promise((resolve, reject) => {
+    exec(cmd, { timeout: 5000 }, (error, stdout, stderr) => {
+      if (error) {
+        return reject({ error: error.message, stderr });
+      }
+      resolve({ stdout, stderr });
+    });
+  });
+
+// Helper function to clean up temporary files
+function cleanupTempFiles(filePath) {
+  try {
+    fs.unlinkSync(filePath);
+    if (fs.existsSync(`${filePath}.out`)) {
+      fs.unlinkSync(`${filePath}.out`);
+    }
+  } catch (cleanupErr) {
+    console.warn('Cleanup error:', cleanupErr);
+  }
+}
+
+// --------------------------
+// Code Compilation Endpoint
+// --------------------------
+/**
+ * POST /api/compile
+ * Expects JSON body with:
+ * {
+ *    "code": "print('Hello, world!')",
+ *    "language": "python"
+ * }
+ */
+app.post('/api/compile', async (req, res) => {
+  try {
+    const { code, language } = req.body;
+    if (!code || !language) {
+      return res.status(400).json({ error: 'Please provide both code and language.' });
+    }
+    if (!languageCommands[language]) {
+      return res.status(400).json({ error: 'Unsupported language.' });
+    }
+    const langConfig = languageCommands[language];
+    
+    // Create a temporary directory if it doesn't exist
+    const tempDir = path.join(__dirname, 'temp');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir);
+    }
+    
+    // Generate a unique filename for the code file
+    const fileId = uuidv4();
+    const filePath = path.join(tempDir, `${fileId}.${langConfig.extension}`);
+    
+    // Write the code to the temporary file
+    fs.writeFileSync(filePath, code);
+    
+    let compileOutput = null;
+    // If the language requires compilation (e.g., C/C++), compile it first
+    if (langConfig.compile) {
+      const compileCmd = langConfig.compile(filePath);
+      compileOutput = await runCommand(compileCmd);
+    }
+    
+    // Run the code (or binary) and capture output
+    const runCmd = langConfig.run(filePath);
+    const runOutput = await runCommand(runCmd);
+    
+    // Clean up temporary files
+    cleanupTempFiles(filePath);
+    
+    // Return both compile and run outputs (if applicable)
+    res.json({
+      compile: compileOutput, // May be null for interpreted languages
+      run: runOutput,
+    });
+  } catch (err) {
+    console.error('Compilation error:', err);
+    res.status(500).json({ error: err });
   }
 });
 

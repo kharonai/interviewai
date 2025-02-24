@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { InterviewService, Message } from '../../services/interview.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { CodeEditorComponent } from 'src/app/components/code-editor/code-editor.component';
 
 @Component({
   selector: 'app-coding-interview',
@@ -11,6 +12,7 @@ import { Router } from '@angular/router';
 })
 export class CodingInterviewComponent implements OnInit, AfterViewChecked {
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
+  @ViewChild('codeEditor') private codeEditor!: CodeEditorComponent;
 
   interviewMode: 'text' | 'voice' = 'text';
   chatMessages: { sender: 'user' | 'ai', text: string }[] = [];
@@ -25,6 +27,8 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
   speechRecognition: any;
   speechSynth: SpeechSynthesis;
   micActive = false;
+
+  codingPrompt = ''; // Holds the coding problem from AI
 
   maxQuestions = 10; // Limit the interview to 10 questions
   questionCount = 0; // Track the number of AI questions asked
@@ -51,13 +55,37 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
     const systemMessage: Message = {
       role: 'system',
       content: `
-    You are a professional interviewer and hiring manager at ${company}. You are conducting a realistic interview for a candidate applying for the role of ${role} at ${company} for a ${difficulty}-level position. Begin by greeting the candidate warmly and briefly introducing yourself in a natural, conversational tone—do not include any labels like "Interviewer:" or quotation marks around your text. Then, naturally ask the candidate, "Tell me a little about yourself and your current role." 
+    You are a professional technical interviewer at ${company}, conducting a coding interview for a ${role} position at a ${difficulty}-level. Begin by greeting the candidate warmly and introducing yourself in a natural, conversational tone (do not use labels like "Interviewer:" or include quotation marks around your text). Start the interview by asking, "Tell me a little about yourself and your current role."
     
-    After this introduction, use the candidate's resume details (${resume}) to ask one or two follow-up questions. Then continue with three to four more detailed questions that explore the candidate's skills, experiences, and fit for the role. Each question should be concise (at most two sentences) and should be asked one at a time, waiting for the candidate's response before proceeding.
+    After this initial introduction, smoothly transition into the coding interview by presenting a coding problem. Clearly explain the problem, its constraints, and any example cases if needed. Wait for the candidate’s response before moving on.
     
-    Always maintain a friendly, empathetic, and professional tone. If the candidate’s response is vague or off-topic, ask a clarifying question to refocus the conversation. With every new message, include the entire conversation history in your context so that your questions remain relevant and build upon previous answers.
-    `
+    If the candidate submits a solution that is nearly optimal, offer positive feedback and then introduce a new coding challenge that is slightly more difficult than the previous one.
+    
+    Always maintain a friendly, empathetic, and professional tone, and include the entire conversation history with every message to ensure continuity. Do not include any code, just coding question prompt
+    
+    Example response:
+    PROMPT: Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+
+    You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+    You can return the answer in any order. 
+
+    Example 1:
+    Input: nums = [2,7,11,15], target = 9
+    Output: [0,1]
+    Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+    
+    Example 2:
+    Input: nums = [3,2,4], target = 6
+    Output: [1,2]
+
+    Example 3:
+    Input: nums = [3,3], target = 6
+    Output: [0,1]
+    .
+      `
     };
+    
     
     this.conversation.push(systemMessage);
 
@@ -78,6 +106,9 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
         const aiMessage: Message = { role: 'assistant', content: response.message };
         this.conversation.push(aiMessage);
         this.chatMessages.push({ sender: 'ai', text: response.message });
+
+        const prefix = "PROMPT: ";
+        this.codingPrompt = response?.message?.split(prefix)[1]?.trim() ?? '';
   
         if (this.interviewMode === 'voice') {
           this.speakAIMessage(response.message);
@@ -285,7 +316,16 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
     });
   }
   
-  
+  runCode(): void {
+    this.interviewService.getCompiledCode(this.codeEditor.getCurrentCode(), 'javascript').subscribe({
+      next: (response) => {
+        console.log('Compiled code response:', response);
+      },
+      error: (err) => {
+        console.error('Error running code:', err);
+      }
+    });
+  }
   
 
   requestHelp(): void {

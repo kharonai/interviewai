@@ -9,7 +9,7 @@ declare const monaco: any;
 })
 export class CodeEditorComponent implements AfterViewInit, OnChanges {
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
-  @Input() code: string = 'console.log(\'Hello World!\');'; // Accept initial code
+  @Input() code: string = "class ProblemSolver {\n  constructor() {\n  }\n\n  /**\n   * Solve the given problem.\n   * @param {*} input - The input for the problem.\n   * @returns {*} - The output for the problem.\n   */\n  solve(input) {\n    // TODO: Implement your solution here.\n    // For example, if the problem is to echo the input:\n    return input;\n  }\n}\n\nfunction main() {\n  // Sample input; replace with actual input source if needed.\n  const sampleInput = \"Example input for the problem\";\n\n  // Instantiate the ProblemSolver class.\n  const solver = new ProblemSolver();\n\n  // Call the solve() method with the input.\n  const result = solver.solve(sampleInput);\n\n  // Output the result.\n  console.log(\"Result:\", result);\n}\n\nmain();\n";
   editor: any;
   language: string = 'javascript';
 

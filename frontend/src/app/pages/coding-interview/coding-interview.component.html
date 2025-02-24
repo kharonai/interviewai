@@ -3,7 +3,7 @@
   <div class="max-w-6xl w-full bg-white shadow-md rounded-xl p-4 mb-6 flex justify-between items-center">
     <h2 class="text-xl font-semibold text-gray-900">Mock Interview</h2>
     <div class="flex items-center space-x-4">
-      <button
+      <button title="Send Message"
         (click)="toggleMode()"
         class="px-4 py-2 rounded-md text-white font-semibold"
         [ngClass]="interviewMode === 'voice' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-400 hover:bg-gray-500'"
@@ -11,7 +11,7 @@
       >
         {{ interviewMode === 'voice' ? 'Voice Mode' : 'Text Mode' }}
       </button>
-      <button
+      <button title="Send Message"
         (click)="endInterview()"
         class="px-4 py-2 rounded-md text-white font-semibold transition-all duration-200"
         [ngClass]="interviewEnded ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-400'"
@@ -19,14 +19,18 @@
       >
         End Interview
       </button>
-      <div *ngIf="interviewEnded" class="mt-6">
-        <button
-          (click)="generateFeedback()"
-          class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-500"
+      <button *ngIf="interviewEnded" title="Send Message"
+        (click)="generateFeedback()"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-500"
         >
           Get Interview Feedback
-        </button>
-      </div>
+      </button>
+      <button title="Send Message"
+      (click)="runCode()"
+      class="px-4 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-500"
+      >
+        Run Code
+    </button>
     </div>
   </div>
 
@@ -37,7 +41,7 @@
       <h3 class="text-lg font-semibold text-gray-900 mb-2">Coding Prompt</h3>
       <p class="text-gray-700">
         <!-- Replace with dynamic prompt content -->
-        Given an array of integers, write a function to find the maximum product of two numbers.
+        {{ codingPrompt }}
       </p>
     </div>
 
@@ -48,7 +52,7 @@
         <div class="flex-1 bg-gray-50 p-4 rounded-lg shadow-inner">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Coding Editor</h3>
           <div class="h-[38rem] border border-gray-300 rounded-lg">
-            <app-code-editor></app-code-editor>
+            <app-code-editor #codeEditor></app-code-editor>
             <!-- Integrate your CodeMirror (or any editor) instance here -->
             <!-- For example: <ngx-codemirror [(ngModel)]="code" [options]="editorOptions"></ngx-codemirror> -->
           </div>
@@ -97,7 +101,7 @@
             </svg>
             Hold to Speak
           </button>
-        <button
+        <button title="Send Message"
           *ngIf="interviewMode === 'text' && !interviewEnded"
           (click)="sendMessage()"
           class="ml-3 p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-500 flex items-center justify-center"
