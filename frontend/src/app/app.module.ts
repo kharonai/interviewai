@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { LoginComponent } from './pages/login/login.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, icons } from 'lucide-angular';
 import { LandingComponent } from './pages/landing/landing.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -17,6 +17,7 @@ import { ProfileSettingsComponent } from './pages/profile-settings/profile-setti
 import { HomeComponent } from './pages/home/home.component';
 import { CodingInterviewComponent } from './pages/coding-interview/coding-interview.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ChatComponent } from './components/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { HttpClientModule } from '@angular/common/http';
     InterviewFeedbackComponent,
     ProfileSettingsComponent,
     HomeComponent,
-    CodingInterviewComponent
+    CodingInterviewComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +41,8 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     ReactiveFormsModule,
     LucideAngularModule.pick(icons),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,142 @@
+:root {
+    --border-color: #ddd;
+    --bot-bubble-color: #f1f1f1; /* Light grey for bot messages */
+    --user-bubble-color: #ffeac2; /* Light orange for user messages */
+  }
+  
+  /* Container for the entire chat */
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 500px; /* adjust as needed */
+    height: 600px; /* or auto; depends on your layout */
+    background-color: #fff;
+    overflow: hidden; /* to keep a clean border */
+    font-family: Arial, sans-serif;
+    padding-top: 10rem;
+  }
+  
+  /* Header */
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px;
+  }
+  
+  .chatbot-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  
+  .icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .icon-button:hover {
+    color: #000;
+  }
+  
+  /* Chat messages area */
+  .chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  
+  /* Each message row */
+  .message-row {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: flex-end; /* to keep the bubble edges aligned */
+  }
+  
+  /* Distinguish user vs bot messages */
+  .user-message {
+    justify-content: flex-end; /* user on the right */
+  }
+  
+  .bot-message {
+    justify-content: flex-start; /* bot on the left */
+  }
+  
+  /* The message bubble */
+  .bubble {
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+    margin: 0 5px;
+  }
+  
+  .user-message .bubble {
+    background-color: var(--user-bubble-color);
+    color: #333;
+    text-align: right;
+  }
+  
+  .bot-message .bubble {
+    background-color: var(--bot-bubble-color);
+    color: #333;
+    text-align: left;
+  }
+  
+  /* The text within the bubble */
+  .content {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  /* Bot action buttons (retry, undo) under the bubble */
+  .bot-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .bot-actions .icon-button {
+    padding: 4px;
+  }
+  
+  /* Chat input area */
+  .chat-input {
+    display: flex;
+    border-top: 1px solid var(--border-color);
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .chat-input textarea {
+    flex: 1;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 14px;
+    min-height: 36px;
+  }
+  
+  .send-button {
+    margin-left: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0 16px;
+    cursor: pointer;
+  }
+  
+  .send-button:hover {
+    background-color: #0056b3;
+  }
+  
