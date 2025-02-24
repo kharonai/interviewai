@@ -143,9 +143,52 @@ app.post('/api/login', (req, res) => {
  *    ]
  * }
  */
+// Helper function to determine if the response is valid, based on questionCount.
+function isValidResponse(message, questionCount) {
+  const lower = message.toLowerCase();
+  
+  // Define required and disallowed substrings based on the question number.
+  let requiredSubstrings = [];
+  let disallowedSubstrings = [];
+  
+  // For question 1 (questionCount === 0), be extra strict.
+  if (questionCount === 0) {
+    requiredSubstrings.push("Hello");
+    disallowedSubstrings.push("You're Name", "Candidate:");
+  } 
+  // For question 2, maybe disallow references to previous questions.
+  else if (questionCount === 1) {
+    requiredSubstrings.push("PROMPT:", "RESPONSE:");
+    // disallowedSubstrings.push("i'm sorry", "error", "previous question");
+  } 
+  // For subsequent questions, allow a bit more flexibility.
+  else {
+    disallowedSubstrings.push("You're Name", "Candidate:");
+  }
+  
+  // Check that every required substring is present.
+  for (const req of requiredSubstrings) {
+    if (!lower.includes(req.toLowerCase())) {
+      return false;
+    }
+  }
+  
+  // Check that none of the disallowed substrings are present.
+  for (const dis of disallowedSubstrings) {
+    if (lower.includes(dis.toLowerCase())) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+
 app.post('/api/interview', async (req, res) => {
   try {
-    const conversation = req.body.conversation;
+    console.log('Received request:', req.body);
+    // Use let for variables that might be reassigned
+    let { conversation, questionCount } = req.body;
     if (!conversation || !Array.isArray(conversation)) {
       console.error('Invalid conversation format:', conversation);
       return res.status(400).json({ error: 'Invalid conversation format. It must be an array of messages.' });
@@ -153,24 +196,46 @@ app.post('/api/interview', async (req, res) => {
 
     console.log('Conversation received:', conversation);
 
-    // Call OpenAI's ChatCompletion API using the conversation as context.
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo', // or 'gpt-4' if available
-      messages: conversation,
-      temperature: 0.7,
-    });
+    const maxAttempts = 3;
+    let attempts = 0;
+    let aiResponse = "";
+    let completion;
 
-    console.log('Completion response:', completion);
-    if (!completion || !completion.choices) {
-      return res.status(500).json({ error: 'Invalid completion response from OpenAI.' });
+    // Retry up to maxAttempts times to get a valid response.
+    while (attempts < maxAttempts) {
+      completion = await openai.chat.completions.create({
+        model: 'gpt-4', // or 'gpt-4' if available
+        messages: conversation,
+        temperature: 0.7,
+      });
+      
+      if (!completion || !completion.choices || !completion.choices[0]) {
+        return res.status(500).json({ error: 'Invalid completion response from OpenAI.' });
+      }
+      
+      aiResponse = completion.choices[0].message.content.trim();
+      console.log(`Attempt ${attempts + 1} response: ${aiResponse}`);
+
+      if (isValidResponse(aiResponse, questionCount)) {
+        break;
+      }
+      
+      attempts++;
+      console.warn(`Response did not pass validation for question ${questionCount + 1}. Retrying...`);
     }
-    const aiResponse = completion.choices[0].message.content;
+
+    if (!isValidResponse(aiResponse, questionCount)) {
+      console.warn('Returning the final response even though it may be invalid after max attempts.');
+    }
+
     res.json({ message: aiResponse });
   } catch (error) {
     console.error('Error in /api/interview:', error.response ? error.response.data : error.message);
     res.status(500).json({ error: 'An error occurred while processing the AI interview.' });
   }
 });
+
+
 
 const feedbackStorage = new Map();
 app.post('/api/interview-feedback', async (req, res) => {

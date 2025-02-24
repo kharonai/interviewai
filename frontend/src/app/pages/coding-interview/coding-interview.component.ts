@@ -4,6 +4,7 @@ import { InterviewService, Message } from '../../services/interview.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CodeEditorComponent } from 'src/app/components/code-editor/code-editor.component';
+import { SYSTEM_PROMPTS, InterviewPromptParams, DEFAULT_SYSTEM_PROMPT } from 'src/app/config/system-prompts';
 
 @Component({
   selector: 'app-coding-interview',
@@ -35,6 +36,9 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
 
   feedback: any = null; // ✅ Declare feedback property at the class level
 
+  // Prompt parameters will be used to dynamically generate system prompts.
+  promptParams!: InterviewPromptParams;
+
   constructor(
     @Inject(AuthService) private authService: AuthService,
     private interviewService: InterviewService,
@@ -51,42 +55,20 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
     const resume = setupData.resume || 'no resume provided';
     const difficulty = setupData.difficulty || 'medium';
 
-    // Build a system prompt using the interview setup information
+    // Build the prompt parameters
+    this.promptParams = {
+      role,
+      company,
+      resume,
+      difficulty
+    };
+
+    // Use the 0th prompt from the external system prompts.
     const systemMessage: Message = {
       role: 'system',
-      content: `
-    You are a professional technical interviewer at ${company}, conducting a coding interview for a ${role} position at a ${difficulty}-level. Begin by greeting the candidate warmly and introducing yourself in a natural, conversational tone (do not use labels like "Interviewer:" or include quotation marks around your text). Start the interview by asking, "Tell me a little about yourself and your current role."
-    
-    After this initial introduction, smoothly transition into the coding interview by presenting a coding problem. Clearly explain the problem, its constraints, and any example cases if needed. Wait for the candidate’s response before moving on.
-    
-    If the candidate submits a solution that is nearly optimal, offer positive feedback and then introduce a new coding challenge that is slightly more difficult than the previous one.
-    
-    Always maintain a friendly, empathetic, and professional tone, and include the entire conversation history with every message to ensure continuity. Do not include any code, just coding question prompt
-    
-    Example response:
-    PROMPT: Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
-
-    You may assume that each input would have exactly one solution, and you may not use the same element twice.
-
-    You can return the answer in any order. 
-
-    Example 1:
-    Input: nums = [2,7,11,15], target = 9
-    Output: [0,1]
-    Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
-    
-    Example 2:
-    Input: nums = [3,2,4], target = 6
-    Output: [1,2]
-
-    Example 3:
-    Input: nums = [3,3], target = 6
-    Output: [0,1]
-    .
-      `
+      content: SYSTEM_PROMPTS[0](this.promptParams)
     };
-    
-    
+
     this.conversation.push(systemMessage);
 
     // Fetch the first AI response dynamically using the conversation history
@@ -100,21 +82,18 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
   startInterview(): void {
     this.aiThinking = true;
   
-    this.interviewService.getNextMessage(this.conversation).subscribe({
+    this.interviewService.getNextMessage(this.conversation, this.questionCount).subscribe({
       next: (response) => {
         this.aiThinking = false;
         const aiMessage: Message = { role: 'assistant', content: response.message };
         this.conversation.push(aiMessage);
         this.chatMessages.push({ sender: 'ai', text: response.message });
-
-        const prefix = "PROMPT: ";
-        this.codingPrompt = response?.message?.split(prefix)[1]?.trim() ?? '';
   
         if (this.interviewMode === 'voice') {
           this.speakAIMessage(response.message);
         }
   
-        this.questionCount++; // Start tracking AI questions
+        this.questionCount++; // Increment question count.
       },
       error: (err) => {
         this.aiThinking = false;
@@ -123,67 +102,95 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
     });
   }
   
-
   sendMessage(): void {
     const messageText = this.userMessageControl.value?.trim();
     if (!messageText) return;
   
+    // Add the user's message to the conversation and chat.
     const userMessage: Message = { role: 'user', content: messageText };
     this.conversation.push(userMessage);
     this.chatMessages.push({ sender: 'user', text: messageText });
     this.userMessageControl.reset();
   
-    // Check if we are at the last AI question
-    if (this.questionCount >= this.maxQuestions) {
-      this.aiThinking = true;
-      this.interviewService.getNextMessage([...this.conversation, { role: 'system', content: "Please answer the candidate's final question and conclude the interview professionally." }])
-        .subscribe({
-          next: (response) => {
-            this.aiThinking = false;
-            const aiMessage: Message = { role: 'assistant', content: response.message };
-            this.conversation.push(aiMessage);
-            this.chatMessages.push({ sender: 'ai', text: response.message });
+    // For questions where questionCount < maxQuestions - 2:
+    if (this.questionCount < this.maxQuestions - 2) {
+      // Get a system prompt based on the current question number.
+      const systemPromptFn =
+        SYSTEM_PROMPTS[this.questionCount] ||
+        ((qNum: number, params: InterviewPromptParams) => DEFAULT_SYSTEM_PROMPT(qNum, params));
+      const promptString = systemPromptFn(this.promptParams);
+      const dynamicSystemMessage: Message = { role: 'system', content: promptString };
+      this.conversation.push(dynamicSystemMessage);
+
+      console.log("calling ai with this prompt: ", promptString);
+      console.log("questionCount == ", this.questionCount);
   
-            // End the interview after the AI answers the user's final question
-            this.endInterview();
-          },
-          error: (err) => {
-            this.aiThinking = false;
-            console.error('Error fetching AI response:', err);
+      // Now, request the AI response using the updated conversation.
+      this.aiThinking = true;
+      this.interviewService.getNextMessage(this.conversation, this.questionCount).subscribe({
+        next: (response) => {
+          this.aiThinking = false;
+
+          if (this.questionCount === 1) {
+            const promptMatch = response.message.match(/PROMPT: (.*)/);
+            this.codingPrompt = promptMatch ? promptMatch[1] : '';
+
+            const responseMatch = response.message.match(/RESPONSE: (.*)/);
+            response.message = responseMatch ? responseMatch[1] : response.message;
           }
-        });
+
+          const aiMessage: Message = { role: 'assistant', content: response.message };
+          this.conversation.push(aiMessage);
+          this.chatMessages.push({ sender: 'ai', text: response.message });
+  
+          if (this.interviewMode === 'voice') {
+            this.speakAIMessage(response.message);
+          }
+          this.questionCount++; // Increment question count.
+        },
+        error: (err) => {
+          this.aiThinking = false;
+          console.error('Error fetching AI response:', err);
+        }
+      });
       return;
     }
   
-    // If it's the 10th question, AI asks the candidate if they have any final questions
+    // For the penultimate question: questionCount === maxQuestions - 1
     if (this.questionCount === this.maxQuestions - 1) {
-      const finalAIQuestion: Message = { role: 'assistant', content: "Now that we are at the end of the interview, do you have any questions for me?" };
+      const finalAIQuestion: Message = { 
+        role: 'assistant', 
+        content: "Now that we are at the end of the interview, do you have any questions for me?" 
+      };
       this.conversation.push(finalAIQuestion);
       this.chatMessages.push({ sender: 'ai', text: finalAIQuestion.content });
-      this.questionCount++; // Increment for final question
+      this.questionCount++; // Increment for final question.
       return;
     }
   
-    // Normal AI response logic
-    this.aiThinking = true;
-    this.interviewService.getNextMessage(this.conversation).subscribe({
-      next: (response) => {
-        this.aiThinking = false;
-        const aiMessage: Message = { role: 'assistant', content: response.message };
-        this.conversation.push(aiMessage);
-        this.chatMessages.push({ sender: 'ai', text: response.message });
-  
-        if (this.interviewMode === 'voice') {
-          this.speakAIMessage(response.message);
+    // For the final question: questionCount >= maxQuestions
+    if (this.questionCount >= this.maxQuestions) {
+      this.aiThinking = true;
+      const concludingSystemMessage: Message = {
+        role: 'system',
+        content: "Please answer the candidate's final question and conclude the interview professionally."
+      };
+      this.conversation.push(concludingSystemMessage);
+      this.interviewService.getNextMessage(this.conversation, this.questionCount).subscribe({
+        next: (response) => {
+          this.aiThinking = false;
+          const aiMessage: Message = { role: 'assistant', content: response.message };
+          this.conversation.push(aiMessage);
+          this.chatMessages.push({ sender: 'ai', text: response.message });
+          this.endInterview();
+        },
+        error: (err) => {
+          this.aiThinking = false;
+          console.error('Error fetching final AI response:', err);
         }
-  
-        this.questionCount++; // Increment AI question count
-      },
-      error: (err) => {
-        this.aiThinking = false;
-        console.error('Error fetching AI response:', err);
-      }
-    });
+      });
+      return;
+    }
   }
   
 
