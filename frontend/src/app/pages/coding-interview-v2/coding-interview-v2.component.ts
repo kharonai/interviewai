@@ -370,7 +370,7 @@ export class CodingInterviewV2Component implements OnDestroy {
 
   // Horizontal columns' widths
   col1Width = 600;
-  col2Width = 800;
+  col2Width = 1300;
   private dragging = false;
   private currentColumn: 'col1' | 'col2' | null = null;
   private startX = 0;
