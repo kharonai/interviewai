@@ -7,6 +7,7 @@ export interface InterviewPromptParams {
     difficulty: string;
     resume: string;
     code?: string; // Optional: if you need to pass in a code snippet
+    language?: string; // Optional: if you need to pass in a language
   }
   
   // For specific question numbers, you can predefine custom prompts.
@@ -17,11 +18,13 @@ export interface InterviewPromptParams {
     Always maintain a friendly, empathetic, and professional tone. If the candidate’s response is vague or off-topic, ask a clarifying question to refocus the conversation. With every new message, include the entire conversation history in your context so that your questions remain relevant and build upon previous answers.
     `.trim(),
     1: (params: InterviewPromptParams) => `
-    You are a professional technical interviewer. Please generate a coding prompt in the exact following format:
+    You are a professional technical interviewer. Please generate a coding prompt in ${params.language ?? ''} in the exact following format:
 
     RESPONSE: <response to previousRemark=${params?.conversation?.[0] ?? ''}>
     
     PROMPT: <coding challenge prompt>
+
+    BOILERPLATE: <boilerplate code without solution for the user to fill in>
     
     Ensure this problem is aligned with the expectations of the role. Do not include any extra commentary.
     `.trim(),

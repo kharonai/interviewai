@@ -35,7 +35,7 @@
   </div>
 
   <!-- Main Interview Container -->
-  <div class="max-w-6xl w-full bg-white shadow-md rounded-xl p-6 relative">
+  <div class="max-w-[90rem] w-full bg-white shadow-md rounded-xl p-6 relative">
     <!-- Coding Prompt Row: Full Width -->
     <div class="bg-gray-100 p-4 rounded-lg shadow-inner mb-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-2">Coding Prompt</h3>
@@ -60,9 +60,10 @@
       </div>
 
       <!-- Right Column: Chat Window -->
-      <div class="flex flex-col h-full border border-gray-300 rounded-md">
+      <div class="flex flex-col h-full">
+        <h3 class="pt-4 text-lg font-semibold text-gray-900 mb-2">Chat</h3>
         <!-- Chat Messages -->
-        <div class="h-[37rem] overflow-y-auto pb-24 px-4 pt-[1rem]" #chatContainer>
+        <div class="h-[37rem] border-t border-gray-300 overflow-y-auto pb-24 px-4 pt-[1rem]" #chatContainer>
           <div *ngFor="let message of chatMessages; let last = last" class="flex w-full" [ngClass]="{'mb-16': last, 'mb-4': !last}">
             <!-- AI Message (Left Side) -->
             <div *ngIf="message.sender === 'ai'" class="bg-gray-200 text-gray-900 p-3 rounded-lg max-w-[80%] self-start animate-fadeIn">

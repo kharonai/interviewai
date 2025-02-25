@@ -1,17 +1,17 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked, OnInit, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { InterviewService, Message } from '../../services/interview.service';
-import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CodeEditorComponent } from 'src/app/components/code-editor/code-editor.component';
-import { SYSTEM_PROMPTS, InterviewPromptParams, DEFAULT_SYSTEM_PROMPT } from 'src/app/config/system-prompts';
+import { DEFAULT_SYSTEM_PROMPT, InterviewPromptParams, SYSTEM_PROMPTS } from 'src/app/config/system-prompts';
+import { AuthService } from 'src/app/services/auth.service';
+import { InterviewService, Message } from 'src/app/services/interview.service';
 
 @Component({
-  selector: 'app-coding-interview',
-  templateUrl: './coding-interview.component.html',
-  styleUrls: ['./coding-interview.component.css']
+  selector: 'app-coding-interview-v2',
+  templateUrl: './coding-interview-v2.component.html',
+  styleUrls: ['./coding-interview-v2.component.css']
 })
-export class CodingInterviewComponent implements OnInit, AfterViewChecked {
+export class CodingInterviewV2Component implements OnDestroy {
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
   @ViewChild('codeEditor') private codeEditor!: CodeEditorComponent;
 
@@ -365,5 +365,76 @@ export class CodingInterviewComponent implements OnInit, AfterViewChecked {
     if (this.interviewMode === 'voice') {
       this.speakAIMessage(helpMessage);
     }
+  }
+
+
+  // Horizontal columns' widths
+  col1Width = 600;
+  col2Width = 800;
+  private dragging = false;
+  private currentColumn: 'col1' | 'col2' | null = null;
+  private startX = 0;
+  private startWidth = 0;
+
+  // Vertical rows in Column 3
+  topRowHeight = 300;
+  private isRowResizing = false;
+  private startRowY = 0;
+  private startRowHeight = 0;
+
+  // Horizontal resizing for columns
+  startDrag(event: MouseEvent, column: 'col1' | 'col2'): void {
+    this.dragging = true;
+    this.currentColumn = column;
+    this.startX = event.clientX;
+    this.startWidth = column === 'col1' ? this.col1Width : this.col2Width;
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+  }
+
+  // Vertical resizing for Column 3 rows
+  startRowResize(event: MouseEvent): void {
+    this.isRowResizing = true;
+    this.startRowY = event.clientY;
+    this.startRowHeight = this.topRowHeight;
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+  }
+
+  // Shared mouse move handler for both horizontal and vertical resizing
+  onMouseMove = (event: MouseEvent) => {
+    if (this.dragging && this.currentColumn) {
+      const dx = event.clientX - this.startX;
+      if (this.currentColumn === 'col1') {
+        this.col1Width = Math.max(this.startWidth + dx, 100);
+      } else if (this.currentColumn === 'col2') {
+        this.col2Width = Math.max(this.startWidth + dx, 100);
+      }
+    }
+    if (this.isRowResizing) {
+      const dy = event.clientY - this.startRowY;
+      this.topRowHeight = Math.max(this.startRowHeight + dy, 50);
+    }
+  };
+
+  // Shared mouse up handler for both resizing actions
+  onMouseUp = () => {
+    if (this.dragging) {
+      this.dragging = false;
+      this.currentColumn = null;
+      document.removeEventListener('mousemove', this.onMouseMove);
+      document.removeEventListener('mouseup', this.onMouseUp);
+    }
+    if (this.isRowResizing) {
+      this.isRowResizing = false;
+      document.removeEventListener('mousemove', this.onMouseMove);
+      document.removeEventListener('mouseup', this.onMouseUp);
+    }
+  };
+
+  ngOnDestroy(): void {
+    // Clean up any lingering event listeners
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
   }
 }
