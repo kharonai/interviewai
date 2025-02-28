@@ -1,36 +1,90 @@
-<div class="relative w-full min-h-screen flex flex-col items-center justify-center text-center bg-gradient px-6">
-    <!-- Hero Section -->
-    <section class="max-w-[80rem] w-full mx-auto text-center">
-        <h1 class="text-5xl md:text-6xl font-bold text-black">
-            AI-Powered Mock Interviews
-        </h1>
-        <p class="text-lg text-gray-600 mt-4">
-            Get realistic AI-driven interview practice tailored to your job role and company.
-        </p>
-        <button routerLink="/signup"  class="mt-6 bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-900 transition">
-            Get started <span class="lightning-icon">⚡</span>
-        </button>
-
-        <!-- Feature Cards (Refined Colors and Centered Icons) -->
-        <div class="mt-12 grid gap-6 sm:grid-cols-3">
-            <!-- Feature Card 1 -->
-            <div class="feature-card">
-                <lucide-icon name="file-text" class="h-10 w-10 feature-icon"></lucide-icon>
-                <h3 class="mt-3 feature-heading">Upload Resume</h3>
-                <p class="text-gray-700 text-sm">AI analyzes your resume for job-specific questions.</p>
-            </div>
-            <!-- Feature Card 2 -->
-            <div class="feature-card">
-                <lucide-icon name="mic" class="h-10 w-10 feature-icon"></lucide-icon>
-                <h3 class="mt-3 feature-heading">Realistic Interviews</h3>
-                <p class="text-gray-700 text-sm">Practice with AI-powered voice or text interviews.</p>
-            </div>
-            <!-- Feature Card 3 -->
-            <div class="feature-card">
-                <lucide-icon name="message-square" class="h-10 w-10 feature-icon"></lucide-icon>
-                <h3 class="mt-3 feature-heading">Instant Feedback</h3>
-                <p class="text-gray-700 text-sm">Receive AI-driven feedback & areas of improvement.</p>
-            </div>
+<!-- Main Container with Scroll Snap -->
+<div class="main-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="content-wrapper">
+      <h1 class="main-header font-bold">
+        AI-Powered Mock Interviews
+      </h1>
+      <p class="sub-heading">
+        Get realistic AI-driven interview practice tailored to your job role and company.
+      </p>
+      
+      <!-- Social proof stats -->
+      <div class="social-proof">
+        <div class="stat">
+          <span class="stat-number">1,000+</span>
+          <span class="stat-label">Users</span>
         </div>
-    </section>
+        <div class="stat">
+          <span class="stat-number">4.8</span>
+          <span class="stat-label">Average Rating</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">85%</span>
+          <span class="stat-label">Success Rate</span>
+        </div>
+      </div>
+      
+      <!-- Job Role Input Form -->
+      <div class="search-container">
+        <div class="job-role-input-wrapper">
+          <label for="jobRoleInput" class="visually-hidden">Job Role</label>
+          <span class="input-prefix">I'm interviewing for</span>
+          <input 
+            #jobRoleInput
+            type="text" 
+            id="jobRoleInput" 
+            class="job-role-input" 
+            [(ngModel)]="userJobRole" 
+            [placeholder]="displayedJobRole"
+            (focus)="pauseAnimation()"
+            (blur)="resumeAnimation()"
+            autocomplete="off"
+          >
+        </div>
+        <button routerLink="/signup" class="primary-button">
+          Get started <span class="lightning-icon">⚡</span>
+        </button>
+      </div>
+      
+      <!-- Secondary CTA -->
+      <div class="secondary-cta">
+        <a href="#how-it-works" class="text-link">How it works</a>
+        <span class="separator">•</span>
+        <a href="#testimonials" class="text-link">See success stories</a>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="content-wrapper">
+      <div class="badge-container">
+        <div class="badge behavioral">BEHAVIORAL INTERVIEWS</div>
+        <div class="badge technical">TECHNICAL INTERVIEWS</div>
+        <div class="badge coding">CODING INTERVIEWS</div>
+      </div>
+      
+      <h2 class="section-header">Practice interviews like it's <span class="highlight-orange">20</span><span class="full-orange">25</span></h2>
+      
+      <p class="section-subheading">
+        Prepare for your next interview with AI-powered practice that feels real. Get personalized feedback, tackle industry-specific questions, and build confidence through repeated practice. 
+        <br><br>
+        No more generic advice—just targeted preparation that helps you showcase your true potential.
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="content-wrapper">
+      <h2 class="section-header">Ready to transform your interview experience?</h2>
+      <p class="section-subheading">Join thousands of job seekers who have improved their interview performance.</p>
+      <button routerLink="/signup" class="primary-button">
+        Get started for free
+      </button>
+    </div>
+  </section>
 </div>
