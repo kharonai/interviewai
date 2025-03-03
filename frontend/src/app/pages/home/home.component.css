@@ -17,7 +17,7 @@
 .main-container {
   scroll-snap-type: y mandatory;
   overflow-y: auto;
-  height: 100vh;
+  height: 100%;
 }
 
 section {
@@ -235,13 +235,6 @@ html, body {
 }
 
 /* Prevents scrolling */
-html, body {
-    height: 100vh;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-}
-
 .main-header {
     font-size: 3.75rem;
     text-wrap: balance;

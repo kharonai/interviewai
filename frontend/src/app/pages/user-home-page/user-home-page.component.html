@@ -1,0 +1,154 @@
+<div class="user-home-container gradient mt-[0.5rem]" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>Loading your interview data...</p>
+  </div>
+
+  <!-- Error state -->
+  <div class="error-container" *ngIf="error">
+    <p class="error-message">{{ error }}</p>
+    <button (click)="refreshData()">Try Again</button>
+  </div>
+
+  <!-- Content (only shown when not loading and no error) -->
+  <div class="dashboard-layout" *ngIf="!isLoading && !error">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="user-info">
+          <div class="avatar">{{ userName.charAt(0) }}</div>
+          <h2>{{ userName }}</h2>
+        </div>
+        <button class="collapse-btn" (click)="toggleSidebar()">
+          <span class="toggle-icon">≡</span>
+        </button>
+      </div>
+      
+      <div class="sidebar-content">
+        <div class="progress-tracker">
+          <h3>Your Progress</h3>
+          <div class="progress-circle">
+            <svg viewBox="0 0 36 36">
+              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="circle" [attr.stroke-dasharray]="(metrics.overallScore || 0) + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <text x="18" y="20.35" class="progress-text">{{metrics.overallScore}}</text>
+            </svg>
+            <p class="progress-label">Overall Score</p>
+          </div>
+        </div>
+        
+        <div class="quick-stats">
+          <div class="stat-item">
+            <span class="stat-value">{{metrics.numberOfInterviews}}</span>
+            <span class="stat-label">Interviews</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{metrics.highestScore}}</span>
+            <span class="stat-label">Best Score</span>
+          </div>
+        </div>
+        
+        <div class="sidebar-action">
+          <button class="primary-action-btn" routerLink="/interview-setup">Start New Interview</button>
+        </div>
+      </div>
+      
+      <div class="sidebar-footer">
+        <button class="refresh-btn" (click)="refreshData()" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Refresh Data</span>
+          <span *ngIf="isLoading">Loading...</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <h1 class="main-title">Interview Dashboard</h1>
+      
+      <!-- Recent Activity -->
+      <section class="recent-activity">
+        <div class="section-header">
+          <h2>Recent Interviews</h2>
+          <a routerLink="/all-interviews" class="view-all">View All</a>
+        </div>
+        
+        <div class="interviews-grid">
+          <div *ngFor="let interview of pastInterviews.slice(0, 3)" class="interview-card">
+            <div class="interview-card-header">
+              <h3>{{ interview.role }}</h3>
+              <span class="score-badge" 
+                [ngClass]="{
+                  'high': interview.score >= 90,
+                  'medium': interview.score >= 75 && interview.score < 90,
+                  'low': interview.score < 75
+                }">{{ interview.score }}</span>
+            </div>
+            <div class="interview-details">
+              <p>{{ interview.company }}</p>
+              <p class="interview-date">{{ formatDate(interview.date) }}</p>
+            </div>
+            <p class="feedback-preview">{{ interview.feedback }}</p>
+            <div class="interview-actions">
+              <button class="view-btn" [routerLink]="['/interview-details', interview.id]">View Details</button>
+              <button class="retry-btn" (click)="reattemptInterview(interview.id)">Retry</button>
+            </div>
+          </div>
+          
+          <div *ngIf="pastInterviews.length === 0" class="empty-state">
+            <p>You haven't completed any interviews yet.</p>
+            <button routerLink="/interview-setup">Start Your First Interview</button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Performance Analysis -->
+      <section class="performance-analysis">
+        <h2>Performance Analysis</h2>
+        
+        <div class="analysis-container">
+          <!-- Strengths and Weaknesses in a horizontal layout -->
+          <div class="sw-container">
+            <div class="sw-card strengths">
+              <h3>Your Strengths</h3>
+              <ul class="sw-list">
+                <li *ngFor="let strength of metrics.strengths">
+                  <span class="strength-icon">+</span>
+                  {{ strength }}
+                </li>
+                <li *ngIf="metrics.strengths.length === 0" class="empty-item">No strengths identified yet</li>
+              </ul>
+            </div>
+            <div class="sw-card weaknesses">
+              <h3>Areas to Improve</h3>
+              <ul class="sw-list">
+                <li *ngFor="let weakness of metrics.weaknesses">
+                  <span class="weakness-icon">→</span>
+                  {{ weakness }}
+                </li>
+                <li *ngIf="metrics.weaknesses.length === 0" class="empty-item">No areas identified yet</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Recommendations -->
+      <section class="recommendations">
+        <h2>Recommended Practice</h2>
+        <div class="recommendation-cards">
+          <div class="recommendation-card" *ngFor="let weakness of metrics.weaknesses.slice(0, 2)">
+            <h3>Practice: {{ weakness }}</h3>
+            <p>Focused practice in this area can significantly improve your overall performance.</p>
+            <button routerLink="/practice" [queryParams]="{focus: weakness}">Start Practice</button>
+          </div>
+          <div class="recommendation-card featured">
+            <h3>Try a Full Mock Interview</h3>
+            <p>Ready to put your skills to the test? Try a complete interview simulation.</p>
+            <button class="featured-btn" routerLink="/interview-setup">Start Interview</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

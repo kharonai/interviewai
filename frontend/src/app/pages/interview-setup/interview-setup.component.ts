@@ -82,6 +82,6 @@ export class InterviewSetupComponent {
     localStorage.setItem('interviewSetup', JSON.stringify(setupData));
 
     // Navigate to /interview after form submission
-    this.router.navigate(['/interview']);
+    this.router.navigate(['/interview-v2']);
   }
 }
