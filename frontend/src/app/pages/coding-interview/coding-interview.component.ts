@@ -21,6 +21,9 @@ export class CodingInterviewComponent  {
   interviewEnded = false;
   hasStarted = false; // Prevents AI from repeating the first question
 
+  // Add coding challenge description as a component property
+  codingChallenge: string = 'Write a function to determine if a given string is a palindrome.';
+
   // Sample AI Questions
   questions = [
     "Tell me about yourself.",

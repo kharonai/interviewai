@@ -1,0 +1,34 @@
+/* Gradient background similar to other pages */
+.gradient {
+  background: radial-gradient(circle at center, rgba(206, 173, 255, 0.4), rgba(161, 228, 178, 0.3), rgba(255, 200, 150, 0.3));
+  animation: radiateEffect 6s infinite alternate ease-in-out;
+}
+
+@keyframes radiateEffect {
+  0% { background-size: 100% 100%; }
+  50% { background-size: 120% 120%; }
+  100% { background-size: 100% 100%; }
+}
+
+/* Code highlighting */
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Add some spacing for code blocks */
+.font-mono {
+  line-height: 1.6;
+}
+
+/* Animate fade-in for elements */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}

@@ -13,6 +13,7 @@ import { ProfileSettingsComponent } from './pages/profile-settings/profile-setti
 import { HomeComponent } from './pages/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CodingInterviewComponent } from './pages/coding-interview/coding-interview.component';
+import { CodingInterviewFeedbackComponent } from './pages/coding-interview-feedback/coding-interview-feedback.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent}, // Home page
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'interview-feedback', component: InterviewFeedbackComponent}, // Interview Feedback
   { path: 'interview-setup', component: InterviewSetupComponent}, // Interview
   { path: 'coding-interview', component: CodingInterviewComponent}, // Coding Interview
+  { path: 'coding-interview-feedback', component: CodingInterviewFeedbackComponent}, // Coding Interview Feedback
   { path: 'settings', component: ProfileSettingsComponent},
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' }
