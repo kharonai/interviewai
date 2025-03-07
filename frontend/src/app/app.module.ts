@@ -24,7 +24,6 @@ import { CodingInterviewV2Component } from './pages/coding-interview-v2/coding-i
 import { CodingPromptComponent } from './components/coding-prompt/coding-prompt.component';
 import { UserHomePageComponent } from './pages/user-home-page/user-home-page.component';
 import { InterviewV2Component } from './pages/interview-v2/interview-v2.component';
-import { CodingInterviewV3Component } from './pages/coding-interview-v3/coding-interview-v3.component';
 
 const monacoConfig: NgxMonacoEditorConfig = {
   baseUrl: 'app-name/assets', // configure base path for monaco editor. Starting with version 8.0.0 it defaults to './assets'. Previous releases default to '/assets'
@@ -51,8 +50,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     CodingInterviewV2Component,
     CodingPromptComponent,
     UserHomePageComponent,
-    InterviewV2Component,
-    CodingInterviewV3Component
+    InterviewV2Component
   ],
   imports: [
     BrowserModule,
