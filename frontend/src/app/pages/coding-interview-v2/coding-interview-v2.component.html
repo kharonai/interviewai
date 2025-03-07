@@ -1,0 +1,33 @@
+<div class="flex h-screen overflow-hidden">
+    <!-- Column 1 -->
+    <div class="bg-blue-100 overflow-y-auto mt-[4rem] h-full" [style.width.px]="col1Width" style="min-width: 200px;">
+      <app-coding-prompt></app-coding-prompt>
+    </div>
+    <!-- Gutter 1 -->
+    <div class="w-2 bg-gray-300 cursor-col-resize overflow-y-auto"
+         (mousedown)="startDrag($event, 'col1')">
+    </div>
+    <!-- Column 2 -->
+    <div class="bg-blue-200 mt-[3rem] h-screen" [style.width.px]="col2Width" style="min-width: 200px;">
+        <app-code-editor #codeEditor></app-code-editor>
+    </div>
+    <!-- Gutter 2 -->
+    <div class="w-2 bg-gray-300 cursor-col-resize"
+         (mousedown)="startDrag($event, 'col2')">
+    </div>
+    <!-- Column 3: Two resizable rows using flexbox -->
+    <div class="bg-blue-300 flex-1 flex flex-col" style="min-width: 100px;">
+        <!-- Top Row -->
+        <div class="bg-blue-300 overflow-auto" [style.height.px]="topRowHeight" style="min-height: 50px;">
+            Row 1 Content
+        </div>
+        <!-- Gutter for resizing -->
+        <div class="h-2 bg-gray-300 cursor-row-resize" (mousedown)="startRowResize($event)"></div>
+        <!-- Bottom Row (fills remaining space) -->
+        <div class="bg-blue-400 overflow-auto flex-1" style="min-height: 50px;">
+            Row 2 Content
+        </div>
+    </div>
+  
+  </div>
+  

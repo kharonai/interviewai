@@ -1,0 +1,24 @@
+<div class="w-full h-full min-h-500 flex flex-col bg-white border border-gray-300 shadow-lg rounded-lg">
+    <!-- Top Bar: Language Dropdown & Run Code Button -->
+    <div class="flex items-center justify-between p-3 bg-gray-100 border-b border-gray-300 rounded-t-lg">
+      <!-- Language Dropdown (top left) -->
+      <select 
+        title="Select Language"
+        class="bg-white text-gray-800 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-gray-50 transition"
+        (change)="onLanguageChange($event)">
+        <option value="javascript" [selected]="language === 'javascript'">JavaScript</option>
+        <option value="typescript" [selected]="language === 'typescript'">TypeScript</option>
+        <option value="python" [selected]="language === 'python'">Python</option>
+        <!-- Add more languages as needed -->
+      </select>
+      <!-- Run Code Button (top right) -->
+      <button 
+        class="bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 transition"
+        (click)="runCode()">
+        Run Code
+      </button>
+    </div>
+    <!-- Editor Container -->
+    <div #editorContainer class="flex-1 overflow-y-auto p-2"></div>
+  </div>
+  

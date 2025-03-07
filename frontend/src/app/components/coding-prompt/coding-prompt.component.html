@@ -1,0 +1,43 @@
+<div class="bg-white p-6 rounded shadow max-w-4xl mx-auto h-full">
+    <h1 class="text-2xl font-bold mb-4">Coding Prompt</h1>
+    
+    <!-- Description Section -->
+    <section class="mb-6">
+      <h2 class="text-xl font-bold">Description</h2>
+      <p class="text-gray-800 italic mt-2">
+        {{ description }}
+      </p>
+    </section>
+    
+    <!-- Example Section -->
+    <section class="mb-6">
+      <h2 class="text-xl font-bold">Example</h2>
+      <p class="text-gray-800 italic mt-2">
+        {{ example }}
+      </p>
+    </section>
+    
+    <!-- Function Description Section -->
+    <section class="mb-6">
+      <h2 class="text-xl font-bold">Function Description</h2>
+      <p class="text-gray-800 mt-2">
+        <span class="font-bold">Params:</span> {{ functionDescription.params }}
+      </p>
+      <p class="text-gray-800 mt-2">
+        <span class="font-bold">Returns:</span> {{ functionDescription.returns }}
+      </p>
+    </section>
+    
+    <!-- Sample Input Section -->
+    <section class="mb-6">
+      <h2 class="text-xl font-bold">Sample Input</h2>
+      <pre class="bg-gray-100 p-4 rounded mt-2">{{ sampleInput }}</pre>
+    </section>
+    
+    <!-- Sample Output Section -->
+    <section>
+      <h2 class="text-xl font-bold">Sample Output</h2>
+      <pre class="bg-gray-100 p-4 rounded mt-2">{{ sampleOutput }}</pre>
+    </section>
+  </div>
+  

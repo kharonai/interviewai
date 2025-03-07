@@ -1,12 +1,9 @@
 // Load environment variables first
 import dotenv from 'dotenv';
-dotenv.config();
 
 // Set up __dirname for ES modules
 import { fileURLToPath } from 'url';
 import path from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Import required modules using ES module syntax
 import express from 'express';
@@ -16,6 +13,14 @@ import cors from 'cors';
 
 // Import OpenAI using the new default import syntax
 import OpenAI from 'openai';
+
+// Import additional modules
+import { exec } from 'child_process';
+import { v4 as uuidv4 } from 'uuid';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config();
 
 // Create an OpenAI instance with your API key
 const openai = new OpenAI({
@@ -138,9 +143,52 @@ app.post('/api/login', (req, res) => {
  *    ]
  * }
  */
+// Helper function to determine if the response is valid, based on questionCount.
+function isValidResponse(message, questionCount) {
+  const lower = message.toLowerCase();
+  
+  // Define required and disallowed substrings based on the question number.
+  let requiredSubstrings = [];
+  let disallowedSubstrings = [];
+  
+  // For question 1 (questionCount === 0), be extra strict.
+  if (questionCount === 0) {
+    requiredSubstrings.push("Hello");
+    disallowedSubstrings.push("You're Name", "Candidate:");
+  } 
+  // For question 2, maybe disallow references to previous questions.
+  else if (questionCount === 1) {
+    requiredSubstrings.push("PROMPT:", "RESPONSE:");
+    // disallowedSubstrings.push("i'm sorry", "error", "previous question");
+  } 
+  // For subsequent questions, allow a bit more flexibility.
+  else {
+    disallowedSubstrings.push("You're Name", "Candidate:");
+  }
+  
+  // Check that every required substring is present.
+  for (const req of requiredSubstrings) {
+    if (!lower.includes(req.toLowerCase())) {
+      return false;
+    }
+  }
+  
+  // Check that none of the disallowed substrings are present.
+  for (const dis of disallowedSubstrings) {
+    if (lower.includes(dis.toLowerCase())) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+
 app.post('/api/interview', async (req, res) => {
   try {
-    const conversation = req.body.conversation;
+    console.log('Received request:', req.body);
+    // Use let for variables that might be reassigned
+    let { conversation, questionCount } = req.body;
     if (!conversation || !Array.isArray(conversation)) {
       console.error('Invalid conversation format:', conversation);
       return res.status(400).json({ error: 'Invalid conversation format. It must be an array of messages.' });
@@ -148,24 +196,46 @@ app.post('/api/interview', async (req, res) => {
 
     console.log('Conversation received:', conversation);
 
-    // Call OpenAI's ChatCompletion API using the conversation as context.
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo', // or 'gpt-4' if available
-      messages: conversation,
-      temperature: 0.7,
-    });
+    const maxAttempts = 3;
+    let attempts = 0;
+    let aiResponse = "";
+    let completion;
 
-    console.log('Completion response:', completion);
-    if (!completion || !completion.choices) {
-      return res.status(500).json({ error: 'Invalid completion response from OpenAI.' });
+    // Retry up to maxAttempts times to get a valid response.
+    while (attempts < maxAttempts) {
+      completion = await openai.chat.completions.create({
+        model: 'gpt-4', // or 'gpt-4' if available
+        messages: conversation,
+        temperature: 0.7,
+      });
+      
+      if (!completion || !completion.choices || !completion.choices[0]) {
+        return res.status(500).json({ error: 'Invalid completion response from OpenAI.' });
+      }
+      
+      aiResponse = completion.choices[0].message.content.trim();
+      console.log(`Attempt ${attempts + 1} response: ${aiResponse}`);
+
+      if (isValidResponse(aiResponse, questionCount)) {
+        break;
+      }
+      
+      attempts++;
+      console.warn(`Response did not pass validation for question ${questionCount + 1}. Retrying...`);
     }
-    const aiResponse = completion.choices[0].message.content;
+
+    if (!isValidResponse(aiResponse, questionCount)) {
+      console.warn('Returning the final response even though it may be invalid after max attempts.');
+    }
+
     res.json({ message: aiResponse });
   } catch (error) {
     console.error('Error in /api/interview:', error.response ? error.response.data : error.message);
     res.status(500).json({ error: 'An error occurred while processing the AI interview.' });
   }
 });
+
+
 
 const feedbackStorage = new Map();
 app.post('/api/interview-feedback', async (req, res) => {
@@ -250,6 +320,112 @@ app.post('/api/interview-feedback', async (req, res) => {
   } catch (error) {
     console.error('Error generating feedback:', error);
     res.status(500).json({ error: 'An error occurred while generating interview feedback.' });
+  }
+});
+
+// Define commands for supported languages
+const languageCommands = {
+  javascript: {
+    extension: 'js',
+    run: (filePath) => `node "${filePath}"`,
+  },
+  python: {
+    extension: 'py',
+    run: (filePath) => `python3 "${filePath}"`,
+  },
+  c: {
+    extension: 'c',
+    compile: (filePath) => `gcc "${filePath}" -o "${filePath}.out"`,
+    run: (filePath) => `"${filePath}.out"`,
+  },
+  cpp: {
+    extension: 'cpp',
+    compile: (filePath) => `g++ "${filePath}" -o "${filePath}.out"`,
+    run: (filePath) => `"${filePath}.out"`,
+  },
+  // Add more languages as needed...
+};
+
+// Helper function to run shell commands as a Promise
+const runCommand = (cmd) =>
+  new Promise((resolve, reject) => {
+    exec(cmd, { timeout: 5000 }, (error, stdout, stderr) => {
+      if (error) {
+        return reject({ error: error.message, stderr });
+      }
+      resolve({ stdout, stderr });
+    });
+  });
+
+// Helper function to clean up temporary files
+function cleanupTempFiles(filePath) {
+  try {
+    fs.unlinkSync(filePath);
+    if (fs.existsSync(`${filePath}.out`)) {
+      fs.unlinkSync(`${filePath}.out`);
+    }
+  } catch (cleanupErr) {
+    console.warn('Cleanup error:', cleanupErr);
+  }
+}
+
+// --------------------------
+// Code Compilation Endpoint
+// --------------------------
+/**
+ * POST /api/compile
+ * Expects JSON body with:
+ * {
+ *    "code": "print('Hello, world!')",
+ *    "language": "python"
+ * }
+ */
+app.post('/api/compile', async (req, res) => {
+  try {
+    const { code, language } = req.body;
+    if (!code || !language) {
+      return res.status(400).json({ error: 'Please provide both code and language.' });
+    }
+    if (!languageCommands[language]) {
+      return res.status(400).json({ error: 'Unsupported language.' });
+    }
+    const langConfig = languageCommands[language];
+    
+    // Create a temporary directory if it doesn't exist
+    const tempDir = path.join(__dirname, 'temp');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir);
+    }
+    
+    // Generate a unique filename for the code file
+    const fileId = uuidv4();
+    const filePath = path.join(tempDir, `${fileId}.${langConfig.extension}`);
+    
+    // Write the code to the temporary file
+    fs.writeFileSync(filePath, code);
+    
+    let compileOutput = null;
+    // If the language requires compilation (e.g., C/C++), compile it first
+    if (langConfig.compile) {
+      const compileCmd = langConfig.compile(filePath);
+      compileOutput = await runCommand(compileCmd);
+    }
+    
+    // Run the code (or binary) and capture output
+    const runCmd = langConfig.run(filePath);
+    const runOutput = await runCommand(runCmd);
+    
+    // Clean up temporary files
+    cleanupTempFiles(filePath);
+    
+    // Return both compile and run outputs (if applicable)
+    res.json({
+      compile: compileOutput, // May be null for interpreted languages
+      run: runOutput,
+    });
+  } catch (err) {
+    console.error('Compilation error:', err);
+    res.status(500).json({ error: err });
   }
 });
 

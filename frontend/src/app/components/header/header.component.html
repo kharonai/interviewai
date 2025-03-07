@@ -1,15 +1,15 @@
-<header class="w-full fixed top-0 left-0 z-50 flex justify-between items-center px-12 py-6 bg-white shadow-md">
+<header class="w-full fixed top-0 left-0 z-50 flex justify-between items-center px-12 pt-[1rem] pb-[1rem] bg-white shadow-md">
   <!-- The icon now routes to /dashboard if logged in, otherwise /home -->
   <a [routerLink]="isLoggedIn ? ['/dashboard'] : ['/home']" class="text-lg font-bold tracking-wide flex items-center gap-2">
     <lucide-icon name="aperture" class="w-6 h-6 text-black"></lucide-icon>
     Interview AI
   </a>
-  <nav class="hidden md:flex gap-8 text-gray-700 font-medium">
+  <!-- <nav class="hidden md:flex gap-8 text-gray-700 font-medium">
     <a href="#" class="hover:text-black">Features</a>
     <a href="#" class="hover:text-black">Benefits</a>
     <a href="#" class="hover:text-black">Pricing</a>
     <a href="#" class="hover:text-black">Contact</a>
-  </nav>
+  </nav> -->
   <div *ngIf="isLoggedIn; else signInTemplate" class="relative" 
        (mouseenter)="toggleDropdown(true)" 
        (mouseleave)="toggleDropdown(false)">
