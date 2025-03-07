@@ -10,6 +10,33 @@ import { AuthService } from 'src/app/services/auth.service';
 export class InterviewFeedbackComponent implements OnInit {
   feedback: any = null; // Store AI feedback
   isLoading: boolean = true; // Track loading state
+  
+  // Add default feedback data as component properties
+  performanceScore: string = '85%';
+  keyStrengths: string[] = [
+    'Strong technical explanations',
+    'Clear and structured answers',
+    'Confident communication'
+  ];
+  
+  improvementAreas: string[] = [
+    'More concise responses',
+    'Stronger behavioral examples',
+    'More direct problem-solving approach'
+  ];
+  
+  aiSuggestions: string[] = [
+    'Use the STAR method for structured answers.',
+    'Practice speaking more concisely.',
+    'Prepare real-world examples for common questions.'
+  ];
+  
+  mockTranscript: Array<{role: string, text: string}> = [
+    { role: 'AI', text: 'Tell me about yourself.' },
+    { role: 'You', text: 'I am a software engineer with 4 years of experience...' },
+    { role: 'AI', text: 'What are your strengths and weaknesses?' },
+    { role: 'You', text: 'My strength is problem-solving, and my weakness...' }
+  ];
 
   constructor(private authService: AuthService , private interviewService: InterviewService) {}
 
@@ -54,5 +81,13 @@ export class InterviewFeedbackComponent implements OnInit {
     }
   }
   
+  reattemptInterview(): void {
+    // Logic to start a new interview
+    console.log('Reattempt interview functionality will be implemented in the future');
+  }
   
+  downloadFeedback(): void {
+    // Future implementation for downloading feedback as PDF
+    console.log('Download feedback functionality will be implemented in the future');
+  }
 }

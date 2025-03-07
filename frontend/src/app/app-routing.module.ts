@@ -16,6 +16,7 @@ import { CodingInterviewComponent } from './pages/coding-interview/coding-interv
 import { CodingInterviewV2Component } from './pages/coding-interview-v2/coding-interview-v2.component';
 import { UserHomePageComponent } from './pages/user-home-page/user-home-page.component';
 import { InterviewV2Component } from './pages/interview-v2/interview-v2.component';
+import { CodingInterviewFeedbackComponent } from './pages/coding-interview-feedback/coding-interview-feedback.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent}, // Home page
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: 'interview-feedback', component: InterviewFeedbackComponent}, // Interview Feedback
   { path: 'interview-setup', component: InterviewSetupComponent}, // Interview
   { path: 'coding-interview', component: CodingInterviewComponent}, // Coding Interview
+  { path: 'coding-interview-feedback', component: CodingInterviewFeedbackComponent}, // Coding Interview Feedback
   { path: 'coding-interview-v2', component: CodingInterviewV2Component}, // Coding Interview V2
   { path: 'settings', component: ProfileSettingsComponent},
   { path: 'user-home', component: UserHomePageComponent },
